@@ -39,7 +39,7 @@ class OpenAIService:
             }
 
             response = requests.request("POST", url, headers=headers, json=payload, timeout=Config.OPEN_AI_TIMEOUT)
-            print(token)
+ #           print(token)
  #           print(headers)
  #           print(payload)
             if response.status_code != HTTPStatus.OK:
@@ -55,3 +55,26 @@ class OpenAIService:
             return []
 
 
+    @staticmethod
+    def open_ai_get_embeddings(query: str) -> list:
+        try:
+            url = f"{Config.OPEN_AI_SVC_URL}/api/v1/embeddings"
+            token = OpenAIService.get_token()
+            headers = {"Content-Type": "application/json", "Authorization": f"Bearer {token}"}
+            payload = {
+                "deployment_id": "text-embedding-ada-002-v2",
+                "input": query,
+            }
+
+            response = requests.request("POST", url, headers=headers, json=payload, timeout=Config.OPEN_AI_TIMEOUT)
+            if response.status_code != HTTPStatus.OK:
+                logging.info("Status code = %s: %s", response.status_code, response.text)
+                return []
+
+            print(response.json())
+            return response.json()["data"][0]["embedding"]
+
+
+        except Exception as e:
+            logging.exception(e)
+            return []

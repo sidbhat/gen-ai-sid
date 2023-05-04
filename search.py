@@ -4,7 +4,7 @@ os.environ["OPENAI_API_KEY"] = 'sk-DY0sojeKUui2UKftUCCYT3BlbkFJsneGEYXxTR9NRRMak
 import streamlit as st
 from llama_index import download_loader
 from llama_index.node_parser import SimpleNodeParser
-from llama_index import GPTSimpleVectorIndex
+from llama_index import GPTVectorStoreIndex
 from llama_index import LLMPredictor, GPTSimpleVectorIndex, PromptHelper, ServiceContext
 from langchain import OpenAI
 from open_ai_service import OpenAIService
@@ -46,7 +46,7 @@ if uploaded_file is not None:
     sidebar_placeholder.subheader(uploaded_file.name)
     sidebar_placeholder.write(documents[0].get_text()[:1000]+'...')
 
-    llm_predictor = LLMPredictor(llm=OpenAI(temperature=0, model_name="da-vinci-003"))
+    llm_predictor = LLMPredictor(llm=OpenAI(temperature=0, model_name="text-davinci-003"))
 
     max_input_size = 2049
     num_output = 256
@@ -56,7 +56,7 @@ if uploaded_file is not None:
 
     service_context = ServiceContext.from_defaults(llm_predictor=llm_predictor, prompt_helper=prompt_helper)
 
-    index = GPTSimpleVectorIndex.from_documents(
+    index = GPTVectorStoreIndex.from_documents(
         documents, service_context=service_context
     )
 
