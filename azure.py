@@ -83,7 +83,7 @@ def send_click():
         st.session_state.response = OpenAIService.open_ai_query(st.session_state.prompt)
         st.session_state.prompt = ''
 
-
+print(OpenAIService.open_ai_get_embeddings("Some sample texts"))
 c1, c2, c3, c4 = st.columns(4)
 
 with c1:
