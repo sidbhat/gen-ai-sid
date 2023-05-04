@@ -84,7 +84,7 @@ def send_click():
         st.session_state.response = OpenAIService.open_ai_query(st.session_state.prompt)
         st.session_state.prompt = ''
 
-print(OpenAIService.open_ai_get_embeddings("Some sample texts"))
+##print(OpenAIService.open_ai_get_embeddings("Some sample texts"))
 c1, c2, c3, c4 = st.columns(4)
 
 with c1:
@@ -118,6 +118,6 @@ if st.session_state.response:
     with c1:
         st.info('**Contact Me: [@sidbhat5](https://twitter.com/sidbhat5)**', icon="💡")
     with c2:
-        st.info('**Open AI: [@openai](https://twitter.com/openai)**', icon="💻")
+        st.info('**Prompts Guide: [Prompts](https://sidbhat.blog/10-chat-gpt-prompts-to-help-you-succeed/)**', icon="💻")
     with c3:
         st.info('**Report Bugs: Email [sid](mailto:siddhartha.bhattacharya@sap.com)**', icon="🧠")
