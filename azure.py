@@ -2,8 +2,8 @@ import streamlit_analytics
 from open_ai_service import OpenAIService
 import streamlit as st
 
-sap_options1 = ["", "What was Workday's revenue in 2020", "How many companies has Workday acquired so far?",
-                "Compare Workday and Oracle against Successfactors in the North America region",
+sap_options1 = ["", "What was <<enter company>> revenue in 2020", "How many companies has <<enter company>> acquired so far?",
+                "Compare <<enter company1>> and <<enter company2>> against Successfactors in the North America region",
                 "List HR software companies in Middle East and North Africa region listing their strengths in the region"]
 sap_options2 = ["", "Top HR challenges facing the retail industry",
                 "Write a 300 word blog with 5 examples on how the gig economy will change the retail industry",
@@ -29,10 +29,10 @@ with st.expander("💬 Help on prompts"):
     st.write('''
 ***
 🕳 **Competitor Specific Prompts**
-1. What was Workday's revenue in 2020.
-2. Compare Workday and Oracle against Successfactors in the North America region.
+1. What was <<enter company>> revenue in 2020.
+2. Compare <<enter company>> and <<enter company>> against Successfactors in the North America region.
 3. List HR software companies in Middle East and North Africa region listing their strengths in the region.
-4. How many companies has Workday acquired so far.
+4. How many companies has <<enter company>> acquired so far.
 ***                 
 💡 **Industry Specific Prompts**
 1. Top HR challenges facing the retail industry.
