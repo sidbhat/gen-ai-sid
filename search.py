@@ -26,7 +26,7 @@ st.set_page_config(page_title="PDF Chatbot with Open AI", page_icon=':bar_chart:
 st.title("👋 Enterprise document(pdf) chat with Open AI")
 
 sidebar_placeholder = st.sidebar.container()
-uploaded_file = st.file_uploader("Choose a file", type=['pdf'])
+uploaded_file = st.file_uploader("Choose a file (upto 4MB)", type=['pdf'])
 
 if uploaded_file is not None:
 
