@@ -39,7 +39,7 @@ class OpenAIService:
             }
 
             response = requests.request("POST", url, headers=headers, json=payload, timeout=Config.OPEN_AI_TIMEOUT)
- #           print(url)
+            print(token)
  #           print(headers)
  #           print(payload)
             if response.status_code != HTTPStatus.OK:
