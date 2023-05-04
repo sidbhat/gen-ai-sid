@@ -23,7 +23,8 @@ st.set_page_config(page_title="Ask Chatty McChatface", page_icon=':bar_chart:', 
 
 st.subheader("👋 Ask Chatty McChatface")
 st.warning(
-    "👀 All the training data used is from the public domain on this page. Do not share any confidential information."
+    "👀 All the training data used is from the public domain on this page. Do not share any confidential information. \n Use this (link)[https://sidbhat-gen-ai-sid-search-wuf493.streamlit.app/] to train it based on your data."
+
 )
 with st.expander("💬 Help on prompts"):
     st.write('''
