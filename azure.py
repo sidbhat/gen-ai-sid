@@ -4,7 +4,10 @@ import streamlit as st
 
 sap_options1 = ["", "What was <<enter company>> revenue in 2020", "How many companies has <<enter company>> acquired so far?",
                 "Compare <<enter company1>> and <<enter company2>> against Successfactors in the North America region",
-                "List HR software companies in Middle East and North Africa region listing their strengths in the region"]
+                "List HR software companies in Middle East and North Africa region listing their strengths in the region",
+                "What is the learning plan to be become a Successfactors LMS consultant? What skills do I need?",
+                "What are the different types of partnerships that SAP offers? What is a solution extension partner?",
+                "How do I change the theme in the Successfactors application? Provide steps for an adminstrator"]
 sap_options2 = ["", "Top HR challenges facing the retail industry",
                 "Write a 300 word blog with 5 examples on how the gig economy will change the retail industry",
                 "Provide a short blog post on job functions that may be displaced by AI in the financial sector with an intro, description and conclusion section"]
@@ -17,6 +20,7 @@ sap_options3 = ["",
                 "Write an email talking about the perennial HR challenges around hiring, motiving and guiding employees in English and German"]
 sap_options4 = ["",
                 "Please generate a job description for a [Digital Marketing Specialist].The ideal candidate should have skills in [SEO/SEM, marketing database, email, social media, and display advertising campaigns]. \n They must be able to have experience in [leading integrated digital marketing campaigns from concept to execution] and have additional experience in [ knowledge of website analytics tools]. Please include the job responsibilities and required qualifications.Ensure the job description does not have bias and is inclusive.",
+                "Write me python and abap code to make a REST API call and authenticate via Microsoft Active Directory",
                 "Provide in a table format an Employee table with the following columns and 10 randomized entries \n [EmployeeId, Employee Name, Job Classification, Cost Center, Region, Job Location, Department, Average Tenure, Total YOE, Pay Grade, Total CTC, Compa- ratio. Impact-of-leaving, Cost-to-train/year, Performance Rating, Future Leader]"]
 
 st.set_page_config(page_title="Ask Chatty McChatface", page_icon=':bar_chart:', layout='wide')
@@ -29,18 +33,20 @@ st.warning(
 with st.expander("💬 Help on prompts"):
     st.write('''
 ***
-🕳 **Competitor Specific Prompts**
+🕳 **Consultants and Partners**
 1. What was <<enter company>> revenue in 2020.
 2. Compare <<enter company>> and <<enter company>> against Successfactors in the North America region.
 3. List HR software companies in Middle East and North Africa region listing their strengths in the region.
-4. How many companies has <<enter company>> acquired so far.
+4. What is the learning plan to be become a Successfactors LMS consultant? What skills do I need?
+5. What are the different types of partnerships that SAP offers? What is a solution extension partner?
+6. How do I change the theme in the Successfactors application? Provide steps for an adminstrator.
 ***                 
-💡 **Industry Specific Prompts**
+💡 **Industry & Emerging Trends**
 1. Top HR challenges facing the retail industry.
 2. Write a 300 word blog with 5 examples on how the gig economy will change the retail industry.
 3. Provide a short blog post on job functions that may be displaced by AI in the financial sector with an intro, description and conclusion section.
 ***
-🗯 **Talk track Specific Prompts**
+🗯 **Content Generation (Sales & Marketing)**
 1. Provide a audio script track for the SuccessFactors recruiting solution for a fashion retail business. Include a grabber headline, intro, description and outro.
 2. Provide 10 limbic openings for a presentation about talent management, learning and payroll.
 3. Provide a talk track introducing Successfactors HR to retail customers with HR leaders in the audience.
@@ -48,9 +54,10 @@ with st.expander("💬 Help on prompts"):
 5. You are a presales expert. Write an email to [person] with some facts about how SuccessFactors has over 3000 EC Customers with a thematic tie-in to Christmas.
 6. Write an email talking about the perennial HR challenges around hiring, motiving and guiding employees in English and German.
 ***
-💛 **Demo Specific Prompts**
+💛 **Data & Code Generation**
 1. Please generate a job description for a [Digital Marketing Specialist].The ideal candidate should have skills in [SEO/SEM, marketing database, email, social media, and display advertising campaigns]. They must be able to have experience in [leading integrated digital marketing campaigns from concept to execution] and have additional experience in [ knowledge of website analytics tools]. Please include the job responsibilities and required qualifications.Ensure the job description does not have bias and is inclusive.
 2. Provide in a table format an Employee table with the following columns and 10 randomized entries EmployeeId, Employee Name, Job Classification, Cost Center, Region, Job Location, Department, Average Tenure, Total YOE, Pay Grade, Total CTC, Compa- ratio. Impact-of-leaving, Cost-to-train/year, Performance Rating, Future Leader.
+3. Write me python and abap code to make a REST API call and authenticate via Microsoft Active Directory.
     ''')
 
 sidebar_placeholder = st.sidebar.container()
@@ -88,13 +95,13 @@ def send_click():
 c1, c2, c3, c4 = st.columns(4)
 
 with c1:
-    selected_value1 = st.selectbox("🕳 Select from Competitor list", sap_options1, key='competitor')
+    selected_value1 = st.selectbox("🕳 Consultants and Partners", sap_options1, key='competitor')
 with c2:
-    selected_value2 = st.selectbox("💡 Select from Industry list", sap_options2, key='industry')
+    selected_value2 = st.selectbox("💡 Industry & Emerging Trends", sap_options2, key='industry')
 with c3:
-    selected_value3 = st.selectbox("🗯 Select from Talk track list", sap_options3, key='talk')
+    selected_value3 = st.selectbox("🗯 Content Generation (Sales & Marketing)", sap_options3, key='talk')
 with c4:
-    selected_value4 = st.selectbox("💛 Select from Demo Data", sap_options4, key='demo')
+    selected_value4 = st.selectbox("💛 Data & Code Generation", sap_options4, key='demo')
 
 if (selected_value1 != ''):
     st.session_state.prompt = selected_value1
