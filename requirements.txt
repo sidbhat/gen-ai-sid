@@ -31,6 +31,5 @@ streamlit
 streamlit-chat
 huggingface_hub
 llama-index
-pyperclip
 streamlit-analytics
 watchdog

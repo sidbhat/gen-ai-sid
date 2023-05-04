@@ -111,8 +111,8 @@ with streamlit_analytics.track():
 
 if st.session_state.response:
     st.success(st.session_state.response, icon="🤖")
-    pyperclip.copy(st.session_state.response)
-    st.info("Response copied to clipboard")
+#    pyperclip.copy(st.session_state.response)
+#    st.info("Response copied to clipboard")
 
     c1, c2, c3 = st.columns(3)
     with c1:
