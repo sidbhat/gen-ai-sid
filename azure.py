@@ -1,7 +1,6 @@
 import streamlit_analytics
 from open_ai_service import OpenAIService
 import streamlit as st
-import pyperclip
 
 sap_options1 = ["", "What was Workday's revenue in 2020", "How many companies has Workday acquired so far?",
                 "Compare Workday and Oracle against Successfactors in the North America region",
