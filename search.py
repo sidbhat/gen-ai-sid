@@ -9,6 +9,7 @@ from llama_index import LLMPredictor, GPTSimpleVectorIndex, PromptHelper, Servic
 from langchain import OpenAI
 from open_ai_service import OpenAIService
 from llama_index import download_loader
+import streamlit_analytics
 
 doc_path = './data/'
 index_file = 'index.json'
@@ -75,8 +76,9 @@ elif os.path.exists(index_file):
     sidebar_placeholder.write(documents[0].get_text()[:1000]+'...')
 
 if index != None:
-    st.text_input("Ask something: ", key='prompt')
-    st.button("Send", on_click=send_click)
+    with streamlit_analytics.track():
+        st.text_input("Ask something: ", key='prompt')
+        st.button("Send", on_click=send_click)
     if st.session_state.response:
         st.subheader("Response: ")
         st.success(st.session_state.response, icon= "🤖")
