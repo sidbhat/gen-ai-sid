@@ -21,6 +21,9 @@ st.title("👋 Enterprise Knowledge Base Search")
 sidebar_placeholder = st.sidebar.container()
 sidebar_placeholder.header('Knowledge base document:')
 sidebar_placeholder.subheader('[Employee Handbook](https://www.foundation.cpp.edu/content/es/d/nh/employee-handbook.pdf)')
+sidebar_placeholder.subheader('[SAP Datasphere](https://help.sap.com/doc/80d2a628f5204ca1a60713ff508c5823/cloud/en-US/SAP_Datasphere_Content.pdf)')
+
+
 #sidebar_placeholder.write('A subset of first 30 pages of the employee handbook')
 
 os.environ['OPENAI_API_KEY'] = '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'
