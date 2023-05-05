@@ -21,7 +21,7 @@ st.title("👋 Enterprise Knowledge Base Search")
 sidebar_placeholder = st.sidebar.container()
 sidebar_placeholder.header('Knowledge base document:')
 sidebar_placeholder.subheader('[Employee Handbook](https://www.foundation.cpp.edu/content/es/d/nh/employee-handbook.pdf)')
-#sidebar_placeholder.write('A subset of first 30 pages of the employee handbook')
+sidebar_placeholder.subheader('A subset of first 30 pages of the employee handbook')
 
 os.environ['OPENAI_API_KEY'] = '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'
 index_name = 'demo-index'
@@ -36,7 +36,7 @@ pinecone.init(
 #print(pinecone)
 index = pinecone.Index(index_name)
 # view index stats
-#print(index.describe_index_stats())
+print(index.describe_index_stats())
 
 #Load PDFS
 #loader = PyPDFLoader("data/employee-handbook.pdf")

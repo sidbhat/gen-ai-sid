@@ -8,7 +8,7 @@ sap_options1 = ["", "What was <<enter company>> revenue in 2020", "How many comp
                 "What is the learning plan to be become a Successfactors LMS consultant? What skills do I need?",
                 "What are the different types of partnerships that SAP offers? What is a solution extension partner?",
                 "How do I change the theme in the Successfactors application? Provide steps for an adminstrator"]
-sap_options2 = ["", "Top HR challenges facing the retail industry",
+sap_options2 = ["", "You are an HR industry expert. Provide the top HR challenges facing the retail industry",
                 "Write a 300 word blog with 5 examples on how the gig economy will change the retail industry",
                 "Provide a short blog post on job functions that may be displaced by AI in the financial sector with an intro, description and conclusion section"]
 sap_options3 = ["",
@@ -42,7 +42,7 @@ with st.expander("💬 Help on prompts"):
 6. How do I change the theme in the Successfactors application? Provide steps for an adminstrator.
 ***                 
 💡 **Industry & Emerging Trends**
-1. Top HR challenges facing the retail industry.
+1. You are an HR industry expert. Provide the top HR challenges facing the retail industry.
 2. Write a 300 word blog with 5 examples on how the gig economy will change the retail industry.
 3. Provide a short blog post on job functions that may be displaced by AI in the financial sector with an intro, description and conclusion section.
 ***

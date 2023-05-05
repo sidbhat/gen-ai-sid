@@ -28,8 +28,11 @@ langchain==0.0.142
 openai
 faiss-cpu
 streamlit
+pypdf
 streamlit-chat
 huggingface_hub
 llama-index
 streamlit-analytics
 watchdog
+pinecone-client
+unstructured
