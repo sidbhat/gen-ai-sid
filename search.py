@@ -85,13 +85,13 @@ c1, c2, c3,c4,c5 = st.columns(5)
 with c1:
     st.info("List the top 10 annoucements from the SAP Sapphire 2023 event where SAP launched SAP Business AI and said it will embed generative AI throughout its applications")
 with c2:
-    st.info("Provide key points from the Servicenow Knowledge 2023 conference in Las Vegas")
+    st.info("Provide 5 key points from the Servicenow Knowledge 2023 conference in Las Vegas")
 with c3:
     st.info("What is tableau GPT and explain how Tableau has addressed three key concerns about the use of generative AI.")
 with c4:
-    st.info("Show the TL;DR on Microsoft Viva")
+    st.info("Show the TL;DR on Microsoft Viva in 10 points")
 with c5:
-    st.info("What is the state of the people analytics technology market in 2023 ")
+    st.info("What is the state of the people analytics technology market in 2023. Explain with a list of key highlights.")
 
 st.text_input("Ask something: ", key='prompt', value='How Capgemini is Tackling Transition to T+1 Capital Market Settlements' )
 st.button("Send", on_click=send_click)
