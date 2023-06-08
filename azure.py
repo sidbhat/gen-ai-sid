@@ -24,7 +24,8 @@ sap_options3 = ["",
                 "Write an email talking about the perennial HR challenges around hiring, motiving and guiding employees in English and German",
                 "Generate a sample Non Disclosure Agreement document for retail company 'Best Run' for its external contractors",
                 "Help me generate a AI image prompt similar to - Award-winning mix-use complex contemporary designed by the best architects in England, stunning London riverside, high resolution, ultra-detailed, 8k, architectural photography Archdaily, Hyper-realistic, intricate detail, photorealistic",
-                "Write a twitter thread on the benefits of blockchain based verified employee credentials"]
+                "Write a twitter thread on the benefits of blockchain based verified employee credentials",
+                "Craft an SEO friendly Linkedin post about diversity and inclusion in the workplace. Provide the target keywords."]
 sap_options4 = ["",
                 "Please generate a job description for a [Digital Marketing Specialist].The ideal candidate should have skills in [SEO/SEM, marketing database, email, social media, and display advertising campaigns]. \n They must be able to have experience in [leading integrated digital marketing campaigns from concept to execution] and have additional experience in [ knowledge of website analytics tools]. Please include the job responsibilities and required qualifications.Ensure the job description does not have bias and is inclusive.",
                 "Write me python and abap code to make a REST API call and authenticate via Microsoft Active Directory",
