@@ -83,17 +83,17 @@ def send_click():
 c1, c2, c3,c4,c5 = st.columns(5)
 
 with c1:
-    st.info("How to setup currency conversion in SAP Datasphere?",icon='atom_symbol')
+    st.info("How to setup currency conversion in SAP Datasphere?",icon='⚛️')
 with c2:
-    st.info("Provide 5 key points from the Servicenow Knowledge 2023 conference in Las Vegas",icon='star')
+    st.info("Provide 5 key points from the Servicenow Knowledge 2023 conference in Las Vegas",icon='🧠')
 with c3:
-    st.info("What is tableau GPT and explain how Tableau has addressed three key concerns about the use of generative AI.",icon='star')
+    st.info("What is tableau GPT and explain how Tableau has addressed three key concerns about the use of generative AI.",icon='🧠')
 with c4:
     st.info(
         "What is the state of the people analytics technology market in 2023. Explain with a list of key highlights.",
-        icon='star')
+        icon='🧠')
 with c5:
-    st.info("Tell me meal periods for employees working less than five hours a day", icon='yin_yang')
+    st.info("Tell me meal periods for employees working less than five hours a day", icon='☮️')
 
 st.text_input("Ask something: ", key='prompt', value='Provide 10 features of SAP Datasphere' )
 st.button("Send", on_click=send_click)
