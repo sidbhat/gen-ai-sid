@@ -13,6 +13,7 @@ sap_options1 = ["", "You are HustleGPT, an entrepreneurial AI. You have $200, an
                 "How do I change the theme in the Successfactors application? Provide steps for an adminstrator"]
 sap_options2 = ["", "You are an HR industry expert. Provide the top HR challenges facing the retail industry",
                 "Write a 300 word blog with 5 examples on how the gig economy will change the retail industry",
+                "Write an outline for an ebook with 10 chapters on how the future of hybrid work can be improved by Web3 and Metaverse. Provide detailed titles and sites as references.",
                 "Provide a short blog post on job functions that may be displaced by AI in the financial sector with an intro, description and conclusion section"]
 sap_options3 = ["",
                 "Provide a audio script track for the SuccessFactors recruiting solution for a fashion retail business. Include a headline, intro, description and outro",
@@ -21,13 +22,15 @@ sap_options3 = ["",
                 "Write an email talking about the perennial HR challenges with a thematic tie-in to the World Cup finals.",
                 "You are a presales expert. Write an email to [person] with some facts about how SuccessFactors has over 3000 EC Customers with a thematic tie-in to Christmas.",
                 "Write an email talking about the perennial HR challenges around hiring, motiving and guiding employees in English and German",
-                "Help me generate a Midjourney prompt similar to - Award-winning mix-use complex contemporary designed by the best architects in England, stunning London riverside, high resolution, ultra-detailed, 8k, architectural photography Archdaily, Hyper-realistic, intricate detail, photorealistic",
+                "Generate a sample Non Disclosure Agreement document for retail company 'Best Run' for its external contractors"
+                "Help me generate a AI image prompt similar to - Award-winning mix-use complex contemporary designed by the best architects in England, stunning London riverside, high resolution, ultra-detailed, 8k, architectural photography Archdaily, Hyper-realistic, intricate detail, photorealistic",
                 "Write a twitter thread on the benefits of blockchain based verified employee credentials"]
 sap_options4 = ["",
                 "Please generate a job description for a [Digital Marketing Specialist].The ideal candidate should have skills in [SEO/SEM, marketing database, email, social media, and display advertising campaigns]. \n They must be able to have experience in [leading integrated digital marketing campaigns from concept to execution] and have additional experience in [ knowledge of website analytics tools]. Please include the job responsibilities and required qualifications.Ensure the job description does not have bias and is inclusive.",
                 "Write me python and abap code to make a REST API call and authenticate via Microsoft Active Directory",
                 "Provide in a table format an Employee table with the following columns and 10 randomized entries \n [EmployeeId, Employee Name, Job Classification, Cost Center, Region, Job Location, Department, Average Tenure, Total YOE, Pay Grade, Total CTC, Compa- ratio. Impact-of-leaving, Cost-to-train/year, Performance Rating, Future Leader]",
-                "Write me a VBA macro to create a presentation for a startup."]
+                "Write me a VBA macro to create a presentation for a startup.",
+                "Generate a sample google sheet with sample movies dataset that can be used for exploratory analysis."]
 
 st.set_page_config(page_title="Ask Chatty McChatface", page_icon=':bar_chart:', layout='wide')
 
@@ -52,6 +55,7 @@ with st.expander("💬 Help on prompts"):
 1. You are an HR industry expert. Provide the top HR challenges facing the retail industry.
 2. Write a 300 word blog with 5 examples on how the gig economy will change the retail industry.
 3. Provide a short blog post on job functions that may be displaced by AI in the financial sector with an intro, description and conclusion section.
+4.Write an outline for an ebook with 10 chapters on how the future of hybrid work can be improved by Web3 and Metaverse. Provide detailed titles and sites as references.
 ***
 🗯 **Content Generation (Sales & Marketing)**
 1. Provide a audio script track for the SuccessFactors recruiting solution for a fashion retail business. Include a headline, intro, description and outro.
@@ -69,6 +73,7 @@ with st.expander("💬 Help on prompts"):
 2. Provide in a table format an Employee table with the following columns and 10 randomized entries EmployeeId, Employee Name, Job Classification, Cost Center, Region, Job Location, Department, Average Tenure, Total YOE, Pay Grade, Total CTC, Compa- ratio. Impact-of-leaving, Cost-to-train/year, Performance Rating, Future Leader.
 3. Write me python and abap code to make a REST API call and authenticate via Microsoft Active Directory.
 4. Write me a VBA macro to create a presentation for a startup.
+5. Generate a sample google sheet with sample movies dataset that can be used for exploratory analysis.
     ''')
 
 sidebar_placeholder = st.sidebar.container()
