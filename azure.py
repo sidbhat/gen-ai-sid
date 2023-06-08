@@ -1,6 +1,8 @@
 import streamlit_analytics
 from open_ai_service import OpenAIService
 import streamlit as st
+import os
+import openai
 
 sap_options1 = ["", "What was <<enter company>> revenue in 2020", "How many companies has <<enter company>> acquired so far?",
                 "Compare <<enter company1>> and <<enter company2>> against Successfactors in the North America region",
@@ -25,7 +27,7 @@ sap_options4 = ["",
 
 st.set_page_config(page_title="Ask Chatty McChatface", page_icon=':bar_chart:', layout='wide')
 
-st.subheader("👋 Ask Chatty McChatface")
+st.subheader("👋 Ask Chatty McChatface v1")
 st.warning(
     "👀 All the training data used is from the public domain on this page. Do not share any confidential information."
 
@@ -75,10 +77,14 @@ selected_value2 = ''
 selected_value3 = ''
 selected_value4 = ''
 
+conversation=[{"role": "system", "content": "You are a helpful assistant that provides detailed answers based on facts. Always cite references for your responses and if you don't know then mention that you are not sure. "}]
+user_input=''
+#openai.api_key='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'
 
 def send_click():
     with st.spinner("Fetching response..."):
         st.session_state['key'] = st.session_state['key'] + '~~~' + st.session_state.prompt.capitalize()
+        user_input = st.session_state.prompt
         #   print( st.session_state['key'])
         with sidebar_placeholder:
             for keys in st.session_state['key'].split('~~~'):
@@ -88,7 +94,16 @@ def send_click():
         st.session_state.industry = sap_options2[0]
         st.session_state.talk = sap_options3[0]
         st.session_state.demo = sap_options4[0]
-        st.session_state.response = OpenAIService.open_ai_query(st.session_state.prompt)
+        conversation.append({"role": "user", "content": user_input})
+        print(conversation)
+
+        # completion = openai.ChatCompletion.create(
+        #     model="gpt-3.5-turbo",
+        #     messages=conversation
+        # )
+        st.session_state.response = OpenAIService.open_ai_query(query='',model='gpt-4-32k',gpt_conversation_history=conversation)
+        #   print(st.session_state.response)
+        conversation.append({"role": "assistant", "content": st.session_state.response})
         st.session_state.prompt = ''
 
 ##print(OpenAIService.open_ai_get_embeddings("Some sample texts"))
@@ -117,9 +132,9 @@ with streamlit_analytics.track():
     st.button("Send", on_click=send_click)
 
 if st.session_state.response:
-    st.success(st.session_state.response, icon="🤖")
-#    pyperclip.copy(st.session_state.response)
-#    st.info("Response copied to clipboard")
+    st.markdown(st.session_state.response)
+    # pyperclip.copy(st.session_state.response)
+    # st.info("Response copied to clipboard")
 
     c1, c2, c3 = st.columns(3)
     with c1:
@@ -127,4 +142,4 @@ if st.session_state.response:
     with c2:
         st.info('**Prompts Guide: [Prompts](https://sidbhat.blog/10-chat-gpt-prompts-to-help-you-succeed/)**', icon="💻")
     with c3:
-        st.info('**Report Bugs: Email [sid](mailto:siddhartha.bhattacharya@sap.com)**', icon="🧠")
+        st.info('**Google Collab: [Code](https://colab.research.google.com/drive/)**', icon="🧠")

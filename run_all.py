@@ -1,44 +1,22 @@
-import os
-import signal
-import subprocess
-import sys
+import streamlit as st
 
-# Parse command-line arguments.
-if len(sys.argv) > 1:
-    folder = os.path.abspath(sys.argv[1])
-else:
-    folder = os.path.abspath(os.getcwd())
+query = ''
+model = ''
 
-# Set up a signal handler so we can stop all Streamlit instances with Ctrl-C.
+def click():
+    st.write(st.session_state.query)
 
-processes = []
+with st.form(key='open_ai',clear_on_submit=True):
+        c1, c2 = st.columns(2)
+        with c1:
+            query = c1.selectbox(label='Select Query', key="query", options=['','Generate a 300 word essay on', 'Write a twitter thread'], on_change=click())
+            model=''
+            st.session_state.prompt = query
+        with c2:
+            model = c1.selectbox(label='Select Model', key="model", options=['','gpt3.5', 'gpt4'])
+            query=''
+            st.session_state.prompt = model
 
-def signal_handler(signal_number, stack_frame):
-    for process in processes:
-        process.kill()
-
-signal.signal(signal.SIGTERM, signal_handler)
-signal.signal(signal.SIGINT, signal_handler)
-
-if sys.platform == 'win32':
-    signal.signal(signal.SIGBREAK, signal_handler)
-else:
-    signal.signal(signal.SIGQUIT, signal_handler)
-
-
-# Runs all Python files, but exclude this script to avoid a loop.
-
-this_file = os.path.abspath(__file__)
-
-for basename in os.listdir(folder):
-    fname = os.path.join(folder, basename)
-
-    if fname.endswith('.py') and fname != this_file and fname != "config.py" and fname !="open_ai_service.py":
-        process = subprocess.Popen(['streamlit', 'run', fname])
-        processes.append(process)
-
-
-# Block this script until all processes terminate.
-
-for process in processes:
-    process.wait()
+        st.text_input("Ask something: ", key='prompt')
+        st.form_submit_button('Enter', on_click=click())
+        st.write(st.session_state.prompt)
