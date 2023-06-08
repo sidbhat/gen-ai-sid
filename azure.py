@@ -116,7 +116,7 @@ def send_click():
         #     model="gpt-3.5-turbo",
         #     messages=conversation
         # )
-        st.session_state.response = OpenAIService.open_ai_query(query='',model='gpt-4-32k',gpt_conversation_history=conversation)
+        st.session_state.response = OpenAIService.open_ai_query(query='',model='gpt-4',gpt_conversation_history=conversation)
         #   print(st.session_state.response)
         conversation.append({"role": "assistant", "content": st.session_state.response})
         st.session_state.prompt = ''

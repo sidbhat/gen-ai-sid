@@ -95,7 +95,7 @@ with c4:
 with c5:
     st.info("Tell me meal periods for employees working less than five hours a day", icon='☮️')
 
-st.text_input("Ask something: ", key='prompt', value='Provide 10 features of SAP Datasphere' )
+st.text_input("Ask something: ", key='prompt', value='Explain the trade secrets and confidentiality in the employee handbook' )
 st.button("Send", on_click=send_click)
 if st.session_state.response:
      st.subheader("Response: ")

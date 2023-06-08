@@ -96,7 +96,7 @@ class OpenAIService:
             return {
                 "deployment_id": model,
                 "messages": gpt_conversation_history,
-                "max_tokens":  8000,
+                "max_tokens":  5000,
                 "temperature": 0.7,
                 "frequency_penalty": 0,
                 "presence_penalty": 0,
