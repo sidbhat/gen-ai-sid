@@ -22,7 +22,7 @@ sap_options3 = ["",
                 "Write an email talking about the perennial HR challenges with a thematic tie-in to the World Cup finals.",
                 "You are a presales expert. Write an email to [person] with some facts about how SuccessFactors has over 3000 EC Customers with a thematic tie-in to Christmas.",
                 "Write an email talking about the perennial HR challenges around hiring, motiving and guiding employees in English and German",
-                "Generate a sample Non Disclosure Agreement document for retail company 'Best Run' for its external contractors"
+                "Generate a sample Non Disclosure Agreement document for retail company 'Best Run' for its external contractors",
                 "Help me generate a AI image prompt similar to - Award-winning mix-use complex contemporary designed by the best architects in England, stunning London riverside, high resolution, ultra-detailed, 8k, architectural photography Archdaily, Hyper-realistic, intricate detail, photorealistic",
                 "Write a twitter thread on the benefits of blockchain based verified employee credentials"]
 sap_options4 = ["",
