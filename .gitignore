@@ -1,3 +1,82 @@
 
 data/gartner.pdf
 data/wd.txt
+data/.DS_Store
+data/Benefits Guide.pdf
+data/Demo Script - SAP SuccessFactors Work Zone -  Empowering the Intelligent Enterprise and TWM - April 2023.pdf
+data/HR RFP.pdf
+data/Markets_Cloud HCM Suites for 1,000+ Employee Enterprises.pdf
+data/sf/4d34e4cd381f4e86a1c51c4abdfa8b52_1.pdf
+data/sf/DiversityInclusionConfig.pdf
+data/sf/HXMSuiteODataAPIRefGuideV4.pdf
+data/sf/loio27769a0aa9974dc8b049808e253c3399_27769a0aa9974dc8b049808e253c3399.pdf
+data/sf/Manage_UI_labels_SAP_SF_HCM_Suite.pdf
+data/sf/SF_BusinessConfigUI_en.pdf
+data/sf/SF_DPP_en-US.pdf
+data/sf/SF_Dynamic_Teams_1.pdf
+data/sf/SF_EC_Configuration_Check_Tool_en.pdf
+data/sf/SF_EP_People_Profile_Admin.pdf
+data/sf/SF_HCM_Boomi_Standards_Guide.pdf
+data/sf/SF_HCM_Change_Audit.pdf
+data/sf/SF_HCM_OData_API_DEV.pdf
+data/sf/SF_HCM_SFAPI_DEV.pdf
+data/sf/SF_HCM_Suite_Picklists_Guardrail_Impl.pdf
+data/sf/SF_HCMS_Boomi_Connector_Reference_Guide.pdf
+data/sf/SF_HXM_IT_Landscape_1.pdf
+data/sf/SF_HXM_Qualtrics_Integration.pdf
+data/sf/SF_IMP_MDF.pdf
+data/sf/SF_Integration_Center.pdf
+data/sf/SF_IS_SettingUp_Impl.pdf
+data/sf/SF_JPB_Admin_EN.pdf
+data/sf/SF_One_Inbox_Integration_en.pdf
+data/sf/SF_PLT_Action_Search_Admin.pdf
+data/sf/SF_PLT_Admin_Center.pdf
+data/sf/SF_PLT_Center_of_Capabilities.pdf
+data/sf/SF_PLT_Configuring_Business_Scenario.pdf
+data/sf/SF_PLT_Custom_Navigation_Admin.pdf
+data/sf/SF_PLT_Deeplinks_en.pdf
+data/sf/SF_PLT_DMS_Attachment_Storage_en.pdf
+data/sf/SF_PLT_Doc_Managment_Box.pdf
+data/sf/SF_PLT_DRM_Admin.pdf
+data/sf/SF_PLT_Home_Page_Admin.pdf
+data/sf/SF_PLT_Implementing_Business_Rules.pdf
+data/sf/SF_PLT_Instance_Referesh_Admin.pdf
+data/sf/SF_PLT_Instance_Sync_Admin.pdf
+data/sf/SF_PLT_Manage_Instance_Access.pdf
+data/sf/SF_PLT_Managing_User_Info_en.pdf
+data/sf/SF_PLT_Org_Chart.pdf
+data/sf/SF_PLT_People_Search.pdf
+data/sf/SF_PLT_Presentations_en.pdf
+data/sf/SF_PLT_Proxy.pdf
+data/sf/SF_PLT_Reimagined_Home_Page.pdf
+data/sf/SF_PLT_Security_Center.pdf
+data/sf/SF_PLT_SF-IAS_Integration_Admin_en.pdf
+data/sf/SF_PLT_Theming_Admin.pdf
+data/sf/SF_PLT_Whole_Self_Model_1.pdf
+data/sf/SF_RBP_Adm.pdf
+data/sf/SF_RBP_Impl.pdf
+data/sf/SF_scheduled_job_reporting_tool.pdf
+data/sf/SF_Staying_Cmpl_UserLicene.pdf
+data/sf/SF_STE_Accessibility_en.pdf
+data/sf/SF_STE_Managing_Scheduled_Jobs_en.pdf
+data/win_loss_report (2).pdf
+db/chroma-collections.parquet
+db/chroma-embeddings.parquet
+db/index/id_to_uuid_6c66deb1-0186-4c91-a2e0-311aba1781a3.pkl
+db/index/id_to_uuid_947b1fb9-83c7-4289-b39f-76b24479bc26.pkl
+db/index/id_to_uuid_f97ab4af-077a-49fe-ab97-384e970286c9.pkl
+db/index/index_6c66deb1-0186-4c91-a2e0-311aba1781a3.bin
+db/index/index_947b1fb9-83c7-4289-b39f-76b24479bc26.bin
+db/index/index_f97ab4af-077a-49fe-ab97-384e970286c9.bin
+db/index/index_metadata_6c66deb1-0186-4c91-a2e0-311aba1781a3.pkl
+db/index/index_metadata_947b1fb9-83c7-4289-b39f-76b24479bc26.pkl
+db/index/index_metadata_f97ab4af-077a-49fe-ab97-384e970286c9.pkl
+db/index/uuid_to_id_6c66deb1-0186-4c91-a2e0-311aba1781a3.pkl
+db/index/uuid_to_id_947b1fb9-83c7-4289-b39f-76b24479bc26.pkl
+db/index/uuid_to_id_f97ab4af-077a-49fe-ab97-384e970286c9.pkl
+Report.docx
+test.py
+data/Demo Script - SAP SuccessFactors Work Zone -  Empowering the Intelligent Enterprise and TWM - April 2023.pdf
+test.py
+data/Demo Script - SAP SuccessFactors Work Zone -  Empowering the Intelligent Enterprise and TWM - April 2023.pdf
+test.py
