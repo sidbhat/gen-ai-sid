@@ -1,4 +1,3 @@
-import gspread
 import streamlit_analytics
 from open_ai_service import OpenAIService
 import streamlit as st
