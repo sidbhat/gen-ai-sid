@@ -25,9 +25,9 @@ Werkzeug==2.2.3
 WTForms==3.0.1
 zipp==3.15.0
 langchain==0.0.142
-openai
+openai~=0.27.5
 faiss-cpu
-streamlit
+streamlit~=1.22.0
 pypdf
 streamlit-chat
 huggingface_hub
@@ -36,3 +36,7 @@ streamlit-analytics
 watchdog
 pinecone-client
 unstructured
+streamlit_option_menu
+bs4
+embedchain~=0.0.10
+docx~=0.2.4

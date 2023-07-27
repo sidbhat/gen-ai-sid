@@ -12,9 +12,10 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import Chroma, Pinecone
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.document_loaders import WebBaseLoader
+from langchain.chat_models import ChatOpenAI
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 
-
-os.environ['OPENAI_API_KEY'] = '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'
+os.environ['OPENAI_API_KEY'] = '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'
 index_name = 'demo-index'
 
 # initialize connection (get API key at app.pinecone.io)
@@ -30,21 +31,29 @@ index = pinecone.Index(index_name)
 print(index.describe_index_stats())
 
 #Load PDFS
-#loader = PyPDFLoader("data/Markets_Cloud HCM Suites for 1,000+ Employee Enterprises.pdf")
-loader = WebBaseLoader(["https://research.nelson-hall.com/blogs-webcasts/nelsonhall-blog/?avpage-views=blog&type=post&post_id=1191","https://redthreadresearch.com/microsoft-viva-glint-2023/","https://redthreadresearch.com/the-state-of-people-analytics-technology-market-2023/","https://www.constellationr.com/blog-news/sap-aims-infuse-generative-ai-throughout-its-applications-heres-everything-sap-sapphire"])
+loader = PyPDFLoader("data/Benefits Guide.pdf")
+#loader = WebBaseLoader(["https://www.learnprompt.org/chat-gpt-prompts-for-business/"])
+#"https://www.constellationr.com/blog-news/c3-ai-ceo-tom-siebel-generative-ai-enterprise-search-will-have-wide-impact"])
 documents = loader.load()
 #print(documents[:5])
-text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
 texts = text_splitter.split_documents(documents)
 
-embeddings = OpenAIEmbeddings(openai_api_key=os.environ['OPENAI_API_KEY'])
-docsearch = Pinecone.from_texts([t.page_content for t in texts], embeddings, index_name=index_name)
-#docsearch = Pinecone.from_existing_index(index_name, embeddings)
 
-llm = OpenAI(temperature=0, openai_api_key=os.environ['OPENAI_API_KEY'], model_name="gpt-3.5-turbo")
+embeddings = OpenAIEmbeddings(openai_api_key=os.environ['OPENAI_API_KEY'])
+#docsearch = Pinecone.from_texts([t.page_content for t in texts], embeddings, index_name=index_name)
+docsearch = Pinecone.from_existing_index(index_name, embeddings)
+
+llm = ChatOpenAI(temperature=0, openai_api_key=os.environ['OPENAI_API_KEY'], model_name="gpt-3.5-turbo", model_kwargs={'max_tokens':4000})
 chain = load_qa_chain(llm, chain_type="stuff")
 
-# query = "Tell me about sap datasphere"
-# docs = docsearch.similarity_search(query, include_metadata=True)
-# response = chain.run(input_documents=docs, question=query)
+query = "Summarize the document."
+
+docs = docsearch.similarity_search(query, include_metadata=True)
+print(len(docs))
+char_text_splitter = RecursiveCharacterTextSplitter(chunk_size=100, chunk_overlap=10)
+d = char_text_splitter.split_documents(docs)
+print(len(d))
+response = chain.run(input_documents=d[:1], question=query)
+print(response)
 print("done")

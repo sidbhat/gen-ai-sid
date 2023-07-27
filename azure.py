@@ -1,8 +1,30 @@
+import gspread
 import streamlit_analytics
 from open_ai_service import OpenAIService
 import streamlit as st
-import os
-import openai
+from pptx import Presentation
+from io import BytesIO
+from pptx.util import Inches, Pt
+from pptx.enum.text import PP_PARAGRAPH_ALIGNMENT
+import docx
+import datetime
+# from google.oauth2 import service_account
+# import json
+
+# #from gsheetsdb import connect
+# google_json = {
+#   "type": "service_account",
+#   "project_id": "chatty-394114",
+#   "private_key_id": "1c92a38dd9adbea24a4379feda95abb80a3034ff",
+#   "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDCzuL50Fu2TCF8\nl4rCOvb6NDsXUWN0jUR2ti9gThzL38K+IMVnfOfIBHtxlWNcbc0Z8Ui14NhLU2gr\nJZEDYltiXL7HiCHhE7JkGvk5MWXKiNSivinbngEjLO6bjvzJ2Pmt9wfz0o1eV5b7\nrrnFo45t3LRiHF86bk7eZUj1vybHG4QRF3wedp/nwzbGO1x0CD38AP1Saks0ELPo\n+Q571nzM7m/E2Hb+Xxp7Pj72xrvKqZhqJyllJFYfIhZY/8oWrKT2ZY+/sx3trULZ\nPpLuaow2jzHA545JzMLPVmVn1sHyzWVfQTa03DDQfg7yK7uszFD7WCjI009tgmJN\nVdjbZYoBAgMBAAECggEAFzvFveXigkKLKIkJqgeOnCGYPebdizGBTafbIku+oHaz\n4FQX5widEMcEEp8D+3/hmxX38Np7lrmVrgusGLC61bzaSKwiNO38nnbJwXn0OhcJ\nRng9QBg/P3rk4ZWd7X7crFRO1P6yuzfhZcFIHlusKXXN56Oa8eTlBXN5Tkx5a1Er\nLa69UR0oaRri/zQ4glZWIwCU5TgmEeX+OXrM7jOoBBDQSLVbVNK13K1oKxWVouf5\nNwYVxzUhggPn0XYCsatacQ37Mo22ddXEruS4nPcOovIZeJk+s9WzhwPzKVSja8in\nPJhlRW2RLnPMAwWs6Vqj2g9ulTftvHAAqLsi9l3SrwKBgQDyjo5zhzIi53vpnYpd\niK0Psj1gWWlZIwvnSdPynabUUHk314hsfr9r+2F74t3CCbNUFWr6Q7G7e7L+Yy5N\n3/IUxgSl9MJYq4tToOq1GcaggiHhiJ6X7Iyf7iGG5yku2C7xvDx6M/MMycjsLg8D\n/22sa6zginESwExEBe+WJWBrIwKBgQDNmty9BkL1guAWzZEC5ZuRYCYairaWbxqk\nKuex9lPU7f64CyxI5bZbVVMCcCIYK5s86aEvoPTl2wHQf5Ta4oPGfvAyn123W9X8\naJjhrazso123BLbhmLMf051rsKabQEKc16XL2pvsPgyehx19RdpzsXR84hYh33qX\nBlUGwHQKiwKBgQDKdK72QwxYEftdnX+WXrSE+3M7bqX+HsCaxwa/5VMQuDLVp3NZ\ni9nfGa3eqBgNE+e48T+fsM0y/icDKmnF2nzHVhkfJFLrjBP5M8F0dBVUeAoro8ss\nZ+dgvnUBkwTO8ucMIuAf6CigrfSlHjSuU4+JcT6VFTkYO6XsyT+XhY8bHQKBgEeB\nya2wJM+QUfF8UyfHxWA9KWNnxPLy9zgLeAOL4UIX99P4htFfmxmOxkz9xM3VNKtt\nsdKHz0S1856ZEKNDzoLVmSJyDLz9oqGjmzA6H/85HhnN+PDjE8FI7uIKUReDtOcp\nlQ8eG8aBGhB0e4wbJEvCdvoMA5iKSe+Gk0HC41jbAoGBAI2DoRGMeIBq1YmW7j43\ng2YiZt/HvC6LzYrzpGHpCCxHlNOmiN4yMKZW/U3RzGbk5CnHuHL4OGgRN+iOF6CS\nrkX0fDwek5iAvYXBspLXJJFak8w6G+3VDefEpFCPeIlo8Aq68HTwqeYTjlGgVo/1\nSzPU2zOSFhbHUgpALiZLObSi\n-----END PRIVATE KEY-----\n",
+#   "client_email": "test-727@chatty-394114.iam.gserviceaccount.com",
+#   "client_id": "106916054558122231861",
+#   "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+#   "token_uri": "https://oauth2.googleapis.com/token",
+#   "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+#   "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test-727%40chatty-394114.iam.gserviceaccount.com",
+#   "universe_domain": "googleapis.com"
+# }
 
 sap_options1 = ["", "You are HustleGPT, an entrepreneurial AI. You have $200, and your goal is to turn that into as much money as possible in the shortest time possible without doing anything illegal. Provide detailed steps.",
                 "What was <<enter company>> revenue in 2020", "How many companies has <<enter company>> acquired so far?",
@@ -96,6 +118,81 @@ conversation=[{"role": "system", "content": "You are a helpful assistant that pr
 user_input=''
 #openai.api_key='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'
 
+
+# def google_sheets():
+#     # Create a connection object.
+#     # service_account_info = json.loads(google_json)
+#     credentials = service_account.Credentials.from_service_account_info(google_json)
+#
+#     scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+#     creds_with_scope = credentials.with_scopes(scope)
+#
+#     client = gspread.authorize(creds_with_scope)
+#     # Perform SQL query on the Google Sheet.
+#     # Uses st.cache_data to only rerun when the query changes or after 10 min.
+#     @st.cache_data(ttl=600)
+#     def run_query(query):
+#         spreadsheet = client.open_by_url('https://docs.google.com/spreadsheets/d/1twXfKk7IcMMVw2uv1arnqjZKDLjoHw8PepTThX0yBdo/edit?usp=sharing')
+#         worksheet = spreadsheet.get_worksheet(0)
+#         records_data = worksheet.get_all_records()
+#         print(records_data)
+
+def save_to_pptx(ai_content: str):
+    prs = Presentation()
+    title_slide_layout = prs.slide_layouts[0]
+    slide = prs.slides.add_slide(title_slide_layout)
+    title = slide.shapes.title
+    subtitle = slide.placeholders[1]
+    # print(ai_content)
+    title.text = "Generated Content"
+    subtitle.text = "By Chatty McChatface"
+
+    # adding text
+    if st.session_state.response:
+        # for i in range(len(st.session_state.response)):
+            slide = prs.slides.add_slide(prs.slide_layouts[5])
+            title = slide.shapes.title
+            title.text = "Response from AI"
+            # For adjusting the  Margins in inches
+            left = top = width = height = Inches(1)
+
+            # creating textBox
+            txBox = slide.shapes.add_textbox(left-0.5, top - 0.5,
+                                              width * 9, height * 7)
+             # creating textFrames
+            tf = txBox.text_frame
+            tf.word_wrap = True
+            tf.text = st.session_state.prompt
+            p = tf.add_paragraph()
+            p.font.size = Pt(14)
+            p.text = st.session_state.response
+            p.alignment = PP_PARAGRAPH_ALIGNMENT.LEFT
+
+    # save the output into binary form
+    binary_output = BytesIO()
+    prs.save(binary_output)
+
+
+    return binary_output.getvalue()
+
+def download_docx():
+    doc = docx.Document()
+
+    # Add Title Page followed by section summary
+    doc.add_heading("Generated Output", 0)
+    doc.add_paragraph(f'Authored By: Chatty McChatface')
+
+    doc.add_heading("Request", 1)
+    doc.add_paragraph(st.session_state.prompt.capitalize())
+
+    doc.add_heading("Response", 1)
+    doc.add_paragraph(st.session_state.response)
+    binary_output = BytesIO()
+    doc.save(binary_output)
+    return binary_output.getvalue()
+
+
+
 def send_click():
     with st.spinner("Fetching response..."):
         st.session_state['key'] = st.session_state['key'] + '~~~' + st.session_state.prompt.capitalize()
@@ -103,7 +200,8 @@ def send_click():
         #   print( st.session_state['key'])
         with sidebar_placeholder:
             for keys in st.session_state['key'].split('~~~'):
-                sidebar_placeholder.write(keys)
+                sidebar_placeholder.info(keys)
+
         # sidebar_placeholder.write(st.session_state['key'])
         st.session_state.competitor = sap_options1[0]
         st.session_state.industry = sap_options2[0]
@@ -119,7 +217,7 @@ def send_click():
         st.session_state.response = OpenAIService.open_ai_query(query='',model='gpt-4',gpt_conversation_history=conversation)
         #   print(st.session_state.response)
         conversation.append({"role": "assistant", "content": st.session_state.response})
-        st.session_state.prompt = ''
+
 
 ##print(OpenAIService.open_ai_get_embeddings("Some sample texts"))
 c1, c2, c3, c4 = st.columns(4)
@@ -144,10 +242,23 @@ if (selected_value4 != ''):
 
 with streamlit_analytics.track():
     st.text_area("🦋 Ask something: ", key='prompt')
-    st.button("Send", on_click=send_click)
+    st.button("✅ Send", on_click=send_click)
+    # google_sheets()
 
 if st.session_state.response:
     st.markdown(st.session_state.response)
+    # st.download_button(
+    #     label="Download",
+    #     data=save_to_pptx("\n".join([str(d) for d in st.session_state.response])),
+    #     file_name="chatty.pptx",
+    #     mime="application/pptx",
+    # )
+    st.download_button(
+            label="⬇️ Download",
+            data=download_docx(),
+            file_name="Chatty McChatface Response-" + datetime.datetime.now().strftime("%m-%d-%Y-%H:%M:%S") + ".docx",
+            mime="docx"
+        )
     # pyperclip.copy(st.session_state.response)
     # st.info("Response copied to clipboard")
 
