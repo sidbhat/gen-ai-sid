@@ -27,6 +27,20 @@ from embedchain import App
 # from google.oauth2 import service_account
 # import json
 import os
+import spacy
+import nlp
+import pandas as pd
+
+from spacy.lang.en import English
+
+pd.set_option("max_colwidth", 300)
+nlp = spacy.load("en_core_web_sm")
+ruler = nlp.add_pipe("entity_ruler")
+patterns = [{"label": "ORG", "pattern": "Eightfold"},{"label": "ORG", "pattern": "SAP Successfactors"},{"label": "ORG", "pattern": "SAP"},
+            {"label": "GPE", "pattern": [{"LOWER": "san"}, {"LOWER": "francisco"}]}]
+ruler.add_patterns(patterns)
+
+
 # #from gsheetsdb import connect
 # google_json = {
 #   "type": "service_account",
@@ -55,10 +69,11 @@ sap_options1 = ["", "What are the main features of the 1H 2023 release of the SA
                 "What are the different types of partnerships that SAP offers? What is a solution extension partner?",
                 "How do I change the theme in the Successfactors application? Provide steps for an adminstrator"]
 sap_options2 = ["", "You are an HR industry expert. Provide the top HR challenges facing the retail industry",
-                "Write a 300 word blog with 5 examples on how the gig economy will change the retail industry",
+                "Write a 300-word SEO-friendly blog with right keywords, title, meta-description, h1,h2 details and  5 examples on how the gig economy will change the retail industry.",
                 "Write an outline for an ebook with 10 chapters on how the future of hybrid work can be improved by Web3 and Metaverse. Provide detailed titles and sites as references.",
                 "Provide a short blog post on job functions that may be displaced by AI in the financial sector with an intro, description and conclusion section"]
 sap_options3 = ["",
+                "Rewrite this demo script for a Retail customer  \n Introduction: \n HXM, Human Experience Management, is an evolution of HCM. HXM is about creating individualized, dynamic experiences for all users - whether candidates, new hires, employees, managers or HR leaders.Because our people determine whether an organization succeeds or fails, the experiences we deliver and how we address the moments that matter for every individual impact everything from top line business growth to profitability to how quickly an organization can adapt to change.With HXM we enable customers to move beyond simply facilitating transactions and supporting HR-driven processes, to focus on creating a human-centered approach.\nThis means putting your people and their experiences at the center of everything, listening to their needs and providing them with the tools and information to be productive and make a real impact on the business. Our HXM Suite helps you redefine experiences -- making everyone (candidates, new hires, employees, managers, and HR leaders) feel connected, engaged, empowered, and supported at every step in their employee journey. \nAbout This Demo Script:\nThis script follows one persona, Alex Smith, through the journey from candidate to new hire to employee and, finally, to manager.While the story assumes that you will show Alex as the same persona throughout the demo, you may prefer to show different personas. If so, you will need to adjust the accompanying slide deck and talk track accordingly.\nVignette 1 \n- Intro to Candidate ExperienceAs a candidate, you ask yourself: Can you imagine yourself working for this organization?\n You are driven by meaningful work, supportive management, fantastic work environment, and growth opportunities amongst other things. Will this Company offer that to you? \n You want to understand this company’s culture: does their Corporate Culture align with your priorities? You want to get a sense of their culture including work/life balance, purpose, diversity, etc. through the recruitment experience.\nDemo Flow Demo Story/Message\n. What we want to highlight through this story and solution demonstration is how human experience management (HXM) helps organizations go beyond simply facilitating transactions to truly reinvent experiences in ways that accelerate business growth and drive engagement. \n We do this by shifting the focus from supporting top-down, HR-driven processes to delivering individualized experiences designed completely around the needs of the people in your organization.As we think about how you are going to meet the expectations of your workforce, we need to think about what the ideal experience is for them. \n In fact, we need to start with the experience before they even become an employee. What exactly are candidates looking for?When you think about critical moments for a candidate – searching for a job, the application process, multiple interviews, etc., each of those typically result in many questions and uncertainties. \n  But many organizations offer a less than engaging candidate experience.When it comes to attracting the right talent and offering an engaging candidate experience, many companies struggle with challenges such as a requisition-centric process, high cost of candidate acquisition, long time to hire, and competing with other organizations trying to attract the same high-quality candidates.Organizations face a continued need to attract workers with technological and other specialized skills, yet many have an inability to effectively convey their employer brand.\n Poor sourcing methodologies often lead to ineffective talent pools. Many have antiquated recruiting systems that tend to be limited to applicant tracking and lack complete applicant marketing and mobile capabilities.\n With the current talent shortages, we’re all reading about, this leaves many organizations unable to compete in what some are now calling a new “War for Talent”.",
                 "Provide a audio script track for the SuccessFactors recruiting solution for a fashion retail business. Include a headline, intro, description and outro",
                 "Provide 10 limbic openings for a presentation about talent management, learning and payroll.",
                 "Provide a talk track introducing Successfactors HR to retail customers with HR leaders in the audience",
@@ -79,16 +94,26 @@ sap_options4 = ["",
 bool_search=""
 count_str=""
 result_str=""
+response=""
 st.set_page_config(page_title="Ask Chatty McChatface", page_icon=':bar_chart:', layout='wide')
 
-st.subheader("👋 Ask Chatty McChatface v1")
-st.warning(
-    "👀 All the training data used is from the public domain on this page. Do not share any confidential information."
 
-)
-with st.expander("💬 Help on prompts"):
+st.header("👋 Ask Chatty McChatface v1")
+st.caption("Demo app that showcases how to do prompt engineering with Open AI and how to build an enterprise knowledge base using custom embeddings.")
+
+
+with st.expander("💬 Features and Help"):
     st.write('''
+Features :
+1. **Prompt Engineering** - Primed prompts to provide factual information and cite references. 
+2. **Prompt List** - Out of the box 20+ prompts based on job functions and roles.
+2. **Enterprise Search** - Link to an enterprise knowledge base. Shows how business domain and up to date information can be provided.
+3. **Hide PII and Confidential Information** - Redact feature to hide PII data and other confidential information.
+4. **Save Results** - Export responses to a Word Document.
+5. **History** - View history of requests made.
 ***
+Prompts : 
+
 🕳 **Consultants and Partners**
 1. What was <<enter company>> revenue in 2020.
 2. Compare <<enter company>> and <<enter company>> against Successfactors in the North America region.
@@ -100,7 +125,7 @@ with st.expander("💬 Help on prompts"):
 ***                 
 💡 **Industry & Emerging Trends**
 1. You are an HR industry expert. Provide the top HR challenges facing the retail industry.
-2. Write a 300 word blog with 5 examples on how the gig economy will change the retail industry.
+2. Write a 300-word SEO-friendly blog with right keywords, title, meta-description, h1,h2 details and  5 examples on how the gig economy will change the retail industry.
 3. Provide a short blog post on job functions that may be displaced by AI in the financial sector with an intro, description and conclusion section.
 4.Write an outline for an ebook with 10 chapters on how the future of hybrid work can be improved by Web3 and Metaverse. Provide detailed titles and sites as references.
 ***
@@ -113,7 +138,7 @@ with st.expander("💬 Help on prompts"):
 6. Write an email talking about the perennial HR challenges around hiring, motiving and guiding employees in English and German.
 7. Help me generate a Midjourney prompt similar to - Award-winning mix-use complex contemporary designed by the best architects in England, stunning London riverside, high resolution, ultra-detailed, 8k, architectural photography Archdaily, Hyper-realistic, intricate detail, photorealistic
 8. Write a twitter thread on the benefits of blockchain based verified employee credentials
-
+9.Rewrite this demo script for a Retail customer  \n Introduction: \n HXM, Human Experience Management, is an evolution of HCM. HXM is about creating individualized, dynamic experiences for all users - whether candidates, new hires, employees, managers or HR leaders.Because our people determine whether an organization succeeds or fails, the experiences we deliver and how we address the moments that matter for every individual impact everything from top line business growth to profitability to how quickly an organization can adapt to change.With HXM we enable customers to move beyond simply facilitating transactions and supporting HR-driven processes, to focus on creating a human-centered approach.\nThis means putting your people and their experiences at the center of everything, listening to their needs and providing them with the tools and information to be productive and make a real impact on the business. Our HXM Suite helps you redefine experiences -- making everyone (candidates, new hires, employees, managers, and HR leaders) feel connected, engaged, empowered, and supported at every step in their employee journey. \nAbout This Demo Script:\nThis script follows one persona, Alex Smith, through the journey from candidate to new hire to employee and, finally, to manager.While the story assumes that you will show Alex as the same persona throughout the demo, you may prefer to show different personas. If so, you will need to adjust the accompanying slide deck and talk track accordingly.\nVignette 1 \n- Intro to Candidate ExperienceAs a candidate, you ask yourself: Can you imagine yourself working for this organization?\n You are driven by meaningful work, supportive management, fantastic work environment, and growth opportunities amongst other things. Will this Company offer that to you? \n You want to understand this company’s culture: does their Corporate Culture align with your priorities? You want to get a sense of their culture including work/life balance, purpose, diversity, etc. through the recruitment experience.\nDemo Flow Demo Story/Message\n. What we want to highlight through this story and solution demonstration is how human experience management (HXM) helps organizations go beyond simply facilitating transactions to truly reinvent experiences in ways that accelerate business growth and drive engagement. \n We do this by shifting the focus from supporting top-down, HR-driven processes to delivering individualized experiences designed completely around the needs of the people in your organization.As we think about how you are going to meet the expectations of your workforce, we need to think about what the ideal experience is for them. \n In fact, we need to start with the experience before they even become an employee. What exactly are candidates looking for?When you think about critical moments for a candidate – searching for a job, the application process, multiple interviews, etc., each of those typically result in many questions and uncertainties. \n  But many organizations offer a less than engaging candidate experience.When it comes to attracting the right talent and offering an engaging candidate experience, many companies struggle with challenges such as a requisition-centric process, high cost of candidate acquisition, long time to hire, and competing with other organizations trying to attract the same high-quality candidates.Organizations face a continued need to attract workers with technological and other specialized skills, yet many have an inability to effectively convey their employer brand.\n Poor sourcing methodologies often lead to ineffective talent pools. Many have antiquated recruiting systems that tend to be limited to applicant tracking and lack complete applicant marketing and mobile capabilities.\n With the current talent shortages, we’re all reading about, this leaves many organizations unable to compete in what some are now calling a new “War for Talent”."
 ***
 💛 **Data & Code Generation**
 1. Please generate a job description for a [Digital Marketing Specialist].The ideal candidate should have skills in [SEO/SEM, marketing database, email, social media, and display advertising campaigns]. They must be able to have experience in [leading integrated digital marketing campaigns from concept to execution] and have additional experience in [ knowledge of website analytics tools]. Please include the job responsibilities and required qualifications.Ensure the job description does not have bias and is inclusive.
@@ -142,7 +167,12 @@ conversation=[{"role": "system", "content": "You are a helpful assistant that pr
 user_input=''
 #openai.api_key='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'
 
-
+def replace_ner(mytxt):
+    clean_text = mytxt
+    doc = nlp(mytxt)
+    for ent in reversed(doc.ents):
+        clean_text = clean_text[:ent.start_char] +ent.label_ + clean_text[ent.end_char:]
+    return clean_text
 def enterprise_search():
     os.environ['OPENAI_API_KEY'] = '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'
     index_name = 'demo-index'
@@ -161,12 +191,17 @@ def enterprise_search():
     llm = OpenAIChat(temperature=0, openai_api_key=os.environ['OPENAI_API_KEY'], model_name='gpt-3.5-turbo',
                      model_kwargs={'max_tokens': 1000})
 
-    query = "You are a friendly knowledge bot that provides factual responses from the given context. Always end with a line that cites references and paragraphs used for your results." + st.session_state.prompt
+    query = "You are a friendly knowledge bot that provides factual responses from the given context in sentences and bullet points. Always end with a line that cites references and paragraphs used for your results." + st.session_state.prompt
     chain = load_qa_chain(llm, chain_type="stuff")
     docs = docsearch.similarity_search(st.session_state.prompt, include_metadata=True)
     # print(docs)
     st.session_state.docs = docs
     st.session_state.response = chain.run(input_documents=docs, question=query)
+    print(st.session_state.response)
+    # total_tokens = response.get("total_tokens")
+    # # pricing logic: https://openai.com/pricing#language-models
+    #     if st.session_state.model == "gpt-3.5-turbo":
+    #         cost = total_tokens * 0.002 / 1000
 
 def bing_search():
     query = st.session_state.prompt.replace(" ", "+")  # replacing the spaces in query result with +
@@ -304,12 +339,9 @@ def download_docx():
     doc.save(binary_output)
     return binary_output.getvalue()
 
-
-
 def send_click():
     with st.spinner("Fetching response..."):
         if bool_search:
-            print(bool_search)
             enterprise_search()
         else:
             st.session_state['key'] = st.session_state['key'] + '~~~' + st.session_state.prompt.capitalize()
@@ -355,23 +387,39 @@ if (selected_value4 != ''):
     st.session_state.prompt = selected_value4
 
 with streamlit_analytics.track():
-    st.text_area("🦋 Ask something: ", key='prompt')
-    bool_search = st.checkbox('Include Enterprise Search', key='bool_search')
-    st.button("✅ Send", on_click=send_click)
+    c = st.container()
+    c.text_area("🦋 Ask something: ", key='prompt')
+    bool_search = c.checkbox('Include Enterprise Search', key='bool_search')
+    redact = c.checkbox('Redact Confidential Information')
+    c.button("✅ Send", on_click=send_click)
     # google_sheets()
 
+
+
 if st.session_state.response:
+    if redact:
+        response = replace_ner(st.session_state.response)
+    else:
+        response = st.session_state.response
+
+    # nlp.add_pipe('sentencizer')  # updated
+    # doc = nlp(response)
+    # sentences = [sent.text.strip() for sent in doc.sents]
+    # response = ""
+    # for sentence in sentences:
+    #     response = response + sentence
     if bool_search:
-        st.success(st.session_state.response)
+        st.success(response)
         # st.success(st.session_state.docs)
     else:
-        st.markdown(st.session_state.response)
+        st.info(response)
     # st.download_button(
     #     label="Download",
     #     data=save_to_pptx("\n".join([str(d) for d in st.session_state.response])),
     #     file_name="chatty.pptx",
     #     mime="application/pptx",
     # )
+
     st.download_button(
             label="⬇️ Download",
             data=download_docx(),

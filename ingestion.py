@@ -31,7 +31,7 @@ index = pinecone.Index(index_name)
 print(index.describe_index_stats())
 
 #Load PDFS
-loader = PyPDFLoader("data/FAQ.pdf")
+loader = PyPDFLoader("data/Competitive Battle Book.pdf")
 #loader = WebBaseLoader(["https://www.learnprompt.org/chat-gpt-prompts-for-business/"])
 #"https://www.constellationr.com/blog-news/c3-ai-ceo-tom-siebel-generative-ai-enterprise-search-will-have-wide-impact"])
 documents = loader.load()
