@@ -21,7 +21,7 @@ from langchain.document_loaders import UnstructuredFileLoader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import Chroma, Pinecone
 from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.llms import OpenAIChat
+# from langchain.llms import OpenAIChat
 from langchain import PromptTemplate
 from embedchain import App
 # from google.oauth2 import service_account
@@ -192,7 +192,7 @@ def enterprise_search():
 
     query = "You are a friendly knowledge bot that provides factual responses from the given context in sentences and bullet points. Always end with a line that cites references and paragraphs used for your results." + st.session_state.prompt
     chain = load_qa_chain(llm, chain_type="stuff")
-    docs = docsearch.similarity_search(st.session_state.prompt, include_metadata=True)
+    docs = docsearch.similarity_search(st.session_state.prompt)
     # print(docs)
     st.session_state.docs = docs
     st.session_state.response = chain.run(input_documents=docs, question=query)
