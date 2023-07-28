@@ -15,7 +15,7 @@ from langchain.document_loaders import WebBaseLoader
 from langchain.chat_models import ChatOpenAI
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
-os.environ['OPENAI_API_KEY'] = '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'
+os.environ['OPENAI_API_KEY'] = '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'
 index_name = 'demo-index'
 
 # initialize connection (get API key at app.pinecone.io)
@@ -31,18 +31,18 @@ index = pinecone.Index(index_name)
 print(index.describe_index_stats())
 
 #Load PDFS
-loader = PyPDFLoader("data/Benefits Guide.pdf")
+loader = PyPDFLoader("data/FAQ.pdf")
 #loader = WebBaseLoader(["https://www.learnprompt.org/chat-gpt-prompts-for-business/"])
 #"https://www.constellationr.com/blog-news/c3-ai-ceo-tom-siebel-generative-ai-enterprise-search-will-have-wide-impact"])
 documents = loader.load()
-#print(documents[:5])
+print(documents[:5])
 text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
 texts = text_splitter.split_documents(documents)
 
 
 embeddings = OpenAIEmbeddings(openai_api_key=os.environ['OPENAI_API_KEY'])
-#docsearch = Pinecone.from_texts([t.page_content for t in texts], embeddings, index_name=index_name)
-docsearch = Pinecone.from_existing_index(index_name, embeddings)
+docsearch = Pinecone.from_texts([t.page_content for t in texts], embeddings, index_name=index_name)
+#docsearch = Pinecone.from_existing_index(index_name, embeddings)
 
 llm = ChatOpenAI(temperature=0, openai_api_key=os.environ['OPENAI_API_KEY'], model_name="gpt-3.5-turbo", model_kwargs={'max_tokens':4000})
 chain = load_qa_chain(llm, chain_type="stuff")

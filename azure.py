@@ -7,9 +7,26 @@ from pptx.util import Inches, Pt
 from pptx.enum.text import PP_PARAGRAPH_ALIGNMENT
 import docx
 import datetime
+import pandas as pd
+from bs4 import BeautifulSoup
+import requests as r
+import pinecone
+import langchain
+from langchain.chains.question_answering import load_qa_chain
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.vectorstores import Chroma
+from langchain import OpenAI, VectorDBQA
+from langchain.document_loaders import PyPDFLoader
+from langchain.document_loaders import UnstructuredFileLoader
+from langchain.text_splitter import CharacterTextSplitter
+from langchain.vectorstores import Chroma, Pinecone
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.llms import OpenAIChat
+from langchain import PromptTemplate
+from embedchain import App
 # from google.oauth2 import service_account
 # import json
-
+import os
 # #from gsheetsdb import connect
 # google_json = {
 #   "type": "service_account",
@@ -25,9 +42,14 @@ import datetime
 #   "universe_domain": "googleapis.com"
 # }
 
-sap_options1 = ["", "You are HustleGPT, an entrepreneurial AI. You have $200, and your goal is to turn that into as much money as possible in the shortest time possible without doing anything illegal. Provide detailed steps.",
-                "What was <<enter company>> revenue in 2020", "How many companies has <<enter company>> acquired so far?",
-                "Compare <<enter company1>> and <<enter company2>> against Successfactors in the North America region",
+sap_options1 = ["", "What are the main features of the 1H 2023 release of the SAP SuccessFactors HXM Suite",
+                "How does the SAP SuccessFactors Opportunity Marketplace help employees",
+                "How can I get ready for Talent Intelligence Hub?",
+                "How does Talent Intelligence Hub interact with other SAP SuccessFactors modules?",
+                "What is the SAP SuccessFactors Innovation Strategy?",
+                "What are some examples of SAP Solution Extensions",
+                "What is Eightfold and how does it integrate with SAP?",
+                "What is Beamery and how does it integrate with SAP?",
                 "List HR software companies in Middle East and North Africa region listing their strengths in the region",
                 "What is the learning plan to be become a Successfactors LMS consultant? What skills do I need?",
                 "What are the different types of partnerships that SAP offers? What is a solution extension partner?",
@@ -54,6 +76,9 @@ sap_options4 = ["",
                 "Write me a VBA macro to create a presentation for a startup.",
                 "Generate a sample google sheet with sample movies dataset that can be used for exploratory analysis."]
 
+bool_search=""
+count_str=""
+result_str=""
 st.set_page_config(page_title="Ask Chatty McChatface", page_icon=':bar_chart:', layout='wide')
 
 st.subheader("👋 Ask Chatty McChatface v1")
@@ -117,6 +142,95 @@ conversation=[{"role": "system", "content": "You are a helpful assistant that pr
 user_input=''
 #openai.api_key='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'
 
+
+def enterprise_search():
+    os.environ['OPENAI_API_KEY'] = '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'
+    index_name = 'demo-index'
+
+    # initialize connection (get API key at app.pinecone.io)
+    pinecone.init(
+        api_key="5e6a8cb6-f036-4a23-9b34-c95aec8e317f",
+        environment="us-west1-gcp-free"  # find next to API key
+    )
+
+    # connect to index
+
+    embeddings = OpenAIEmbeddings(openai_api_key=os.environ['OPENAI_API_KEY'])
+    docsearch = Pinecone.from_existing_index(index_name, embeddings)
+
+    llm = OpenAIChat(temperature=0, openai_api_key=os.environ['OPENAI_API_KEY'], model_name='gpt-3.5-turbo',
+                     model_kwargs={'max_tokens': 1000})
+
+    query = "You are a friendly knowledge bot that provides factual responses from the given context. Always end with a line that cites references and paragraphs used for your results." + st.session_state.prompt
+    chain = load_qa_chain(llm, chain_type="stuff")
+    docs = docsearch.similarity_search(st.session_state.prompt, include_metadata=True)
+    # print(docs)
+    st.session_state.docs = docs
+    st.session_state.response = chain.run(input_documents=docs, question=query)
+
+def bing_search():
+    query = st.session_state.prompt.replace(" ", "+")  # replacing the spaces in query result with +
+
+    if query:  # Activates the code below on hitting Enter/Return in the search textbox
+        try:  # Exception handling
+            req = r.get(f"https://www.bing.com/search?q={query}",
+                        headers={
+                            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36"})
+            result_str = '<html><table style="border: none;">'  # Initializing the HTML code for displaying search results
+            print (req.status_code)
+            if req.status_code == 200:  # Status code 200 indicates a successful request
+                bs = BeautifulSoup(req.content,
+                                   features="html.parser")  # converting the content/text returned by request to a BeautifulSoup object
+                search_result = bs.find_all("li",
+                                            class_="b_algo")  # 'b_algo' is the class of the list object which represents a single result
+                search_result = [str(i).replace("<strong>", "") for i in search_result]  # removing the <strong> tag
+                search_result = [str(i).replace("</strong>", "") for i in search_result]  # removing the </strong> tag
+                result_df = pd.DataFrame()  # Initializing the data frame that stores the results
+
+                for n, i in enumerate(search_result):  # iterating through the search results
+                    individual_search_result = BeautifulSoup(i,
+                                                             features="html.parser")  # converting individual search result into a BeautifulSoup object
+                    h2 = individual_search_result.find('h2')  # Finding the title of the individual search result
+
+                    print (h2)
+
+                    href = h2.find('a').get('href')  # title's URL of the individual search result
+                    cite = f'{href[:50]}...' if len(href) >= 50 else href  # cite with first 20 chars of the URL
+                    url_txt = h2.find('a').text  # title's text of the individual search result
+                    # In a few cases few individual search results doesn't have a description. In such cases the description would be blank
+                    description = "" if individual_search_result.find('p') is None else individual_search_result.find(
+                        'p').text
+                    # Appending the result data frame after processing each individual search result
+                    result_df = result_df.append(
+                        pd.DataFrame({"Title": url_txt, "URL": href, "Description": description}, index=[n]))
+                    count_str = f'<b style="font-size:20px;">Bing Search returned {len(result_df)} results</b>'
+                    ########################################################
+                    ######### HTML code to display search results ##########
+                    ########################################################
+                    result_str += f'<tr style="border: none;"><h3><a href="{href}" target="_blank">{url_txt}</a></h3></tr>' + \
+                                  f'<tr style="border: none;"><strong style="color:green;">{cite}</strong></tr>' + \
+                                  f'<tr style="border: none;">{description}</tr>' + \
+                                  f'<tr style="border: none;"><td style="border: none;"></td></tr>'
+                result_str += '</table></html>'
+                print (result_str)
+            # if the status code of the request isn't 200, then an error message is displayed along with an empty data frame
+            else:
+                result_df = pd.DataFrame({"Title": "", "URL": "", "Description": ""}, index=[0])
+                result_str = '<html></html>'
+                count_str = '<b style="font-size:20px;">Looks like an error!!</b>'
+
+        # if an exception is raised, then an error message is displayed along with an empty data frame
+        except Exception as e:
+            result_df = pd.DataFrame({"Title": "", "URL": "", "Description": ""}, index=[0])
+            result_str = f'<html>caught {type(e)}: e</html>'
+            count_str = '<b style="font-size:20px;">Looks like an error!!</b>'
+            print (e)
+
+
+        # # st.markdown(f'{count_str}', unsafe_allow_html=True)
+        # st.markdown(f'{result_str}', unsafe_allow_html=True)
+        # st.markdown('<h3>Data Frame of the above search result</h3>', unsafe_allow_html=True)
+        # st.dataframe(result_df)
 
 # def google_sheets():
 #     # Create a connection object.
@@ -194,28 +308,29 @@ def download_docx():
 
 def send_click():
     with st.spinner("Fetching response..."):
-        st.session_state['key'] = st.session_state['key'] + '~~~' + st.session_state.prompt.capitalize()
-        user_input = st.session_state.prompt
-        #   print( st.session_state['key'])
-        with sidebar_placeholder:
-            for keys in st.session_state['key'].split('~~~'):
-                sidebar_placeholder.info(keys)
+        if bool_search:
+            print(bool_search)
+            enterprise_search()
+        else:
+            st.session_state['key'] = st.session_state['key'] + '~~~' + st.session_state.prompt.capitalize()
+            user_input = st.session_state.prompt
+            #   print( st.session_state['key'])
+            with sidebar_placeholder:
+                for keys in st.session_state['key'].split('~~~'):
+                    if ( keys != ''):
+                        sidebar_placeholder.info(keys)
 
-        # sidebar_placeholder.write(st.session_state['key'])
-        st.session_state.competitor = sap_options1[0]
-        st.session_state.industry = sap_options2[0]
-        st.session_state.talk = sap_options3[0]
-        st.session_state.demo = sap_options4[0]
-        conversation.append({"role": "user", "content": user_input})
-        print(conversation)
+            # sidebar_placeholder.write(st.session_state['key'])
+            st.session_state.competitor = sap_options1[0]
+            st.session_state.industry = sap_options2[0]
+            st.session_state.talk = sap_options3[0]
+            st.session_state.demo = sap_options4[0]
 
-        # completion = openai.ChatCompletion.create(
-        #     model="gpt-3.5-turbo",
-        #     messages=conversation
-        # )
-        st.session_state.response = OpenAIService.open_ai_query(query='',model='gpt-4',gpt_conversation_history=conversation)
-        #   print(st.session_state.response)
-        conversation.append({"role": "assistant", "content": st.session_state.response})
+            conversation.append({"role": "user", "content": user_input})
+            # print(st.session_state.bool_search)
+
+            st.session_state.response = OpenAIService.open_ai_query(query='',model='gpt-4',gpt_conversation_history=conversation)
+            conversation.append({"role": "assistant", "content": st.session_state.response})
 
 
 ##print(OpenAIService.open_ai_get_embeddings("Some sample texts"))
@@ -241,11 +356,16 @@ if (selected_value4 != ''):
 
 with streamlit_analytics.track():
     st.text_area("🦋 Ask something: ", key='prompt')
+    bool_search = st.checkbox('Include Enterprise Search', key='bool_search')
     st.button("✅ Send", on_click=send_click)
     # google_sheets()
 
 if st.session_state.response:
-    st.markdown(st.session_state.response)
+    if bool_search:
+        st.success(st.session_state.response)
+        # st.success(st.session_state.docs)
+    else:
+        st.markdown(st.session_state.response)
     # st.download_button(
     #     label="Download",
     #     data=save_to_pptx("\n".join([str(d) for d in st.session_state.response])),
@@ -260,6 +380,7 @@ if st.session_state.response:
         )
     # pyperclip.copy(st.session_state.response)
     # st.info("Response copied to clipboard")
+
 
     c1, c2, c3 = st.columns(3)
     with c1:
