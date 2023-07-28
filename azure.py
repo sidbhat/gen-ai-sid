@@ -107,14 +107,15 @@ with st.expander("💬 Features and Help"):
 Features :
 1. **Prompt Engineering** - Primed prompts to provide factual information and cite references. 
 2. **Prompt List** - Out of the box 20+ prompts based on job functions and roles.
-2. **Enterprise Search** - Link to an enterprise knowledge base. Shows how business domain and up to date information can be provided.
+2. **Enterprise Search** - Link to an enterprise knowledge base. Shows how business domain and up to date information can be provided (Example - What is new the Successfactors 2023 1H Release) .
 3. **Hide PII and Confidential Information** - Redact feature to hide PII data and other confidential information.
 4. **Save Results** - Export responses to a Word Document.
 5. **History** - View history of requests made.
+6. **New Prompts** - To showcase enterprise search available under 'Customers and Partners' drop down.  New prompt to showcase demo-scripting under 'Content & Marketing'.
 ***
 Prompts : 
 
-🕳 **Consultants and Partners**
+🕳 **Customers and Partners**
 1. What was <<enter company>> revenue in 2020.
 2. Compare <<enter company>> and <<enter company>> against Successfactors in the North America region.
 3. List HR software companies in Middle East and North Africa region listing their strengths in the region.
@@ -368,7 +369,7 @@ def send_click():
 c1, c2, c3, c4 = st.columns(4)
 
 with c1:
-    selected_value1 = st.selectbox("🕳 Consultants and Partners", sap_options1, key='competitor')
+    selected_value1 = st.selectbox("🕳 Customers and Partners", sap_options1, key='competitor')
 with c2:
     selected_value2 = st.selectbox("💡 Industry & Emerging Trends", sap_options2, key='industry')
 with c3:
