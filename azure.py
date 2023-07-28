@@ -165,7 +165,7 @@ selected_value4 = ''
 
 conversation=[{"role": "system", "content": "You are a helpful assistant that provides detailed answers based on facts. Always cite references for your responses towards the end of the response. "}]
 user_input=''
-#openai.api_key='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'
+
 
 def replace_ner(mytxt):
     clean_text = mytxt
@@ -174,7 +174,6 @@ def replace_ner(mytxt):
         clean_text = clean_text[:ent.start_char] +ent.label_ + clean_text[ent.end_char:]
     return clean_text
 def enterprise_search():
-    os.environ['OPENAI_API_KEY'] = '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'
     index_name = 'demo-index'
 
     # initialize connection (get API key at app.pinecone.io)
