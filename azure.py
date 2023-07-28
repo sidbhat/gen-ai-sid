@@ -21,7 +21,7 @@ from langchain.document_loaders import UnstructuredFileLoader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import Chroma, Pinecone
 from langchain.embeddings.openai import OpenAIEmbeddings
-# from langchain.llms import OpenAIChat
+from langchain.llms import OpenAIChat
 from langchain import PromptTemplate
 from embedchain import App
 # from google.oauth2 import service_account
