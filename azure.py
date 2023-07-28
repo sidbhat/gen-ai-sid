@@ -95,7 +95,7 @@ bool_search=""
 count_str=""
 result_str=""
 response=""
-st.set_page_config(page_title="Ask Chatty McChatface", page_icon=':bar_chart:', layout='wide')
+st.set_page_config(page_title="Chat GPT| Open AI| SAP Generative AI| Sid Bhattacharya|", page_icon=':bar_chart:', layout='wide')
 
 
 st.header("👋 Ask Chatty McChatface v1")
