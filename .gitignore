@@ -85,3 +85,5 @@ data/Partner FAQ.pdf
 requirements.txt
 data/Competitive Battle Book.pdf
 data/Competitive Battle Book.pdf
+.streamlit/secrets.toml
+*.toml

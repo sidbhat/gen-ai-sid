@@ -40,3 +40,4 @@ bs4
 embedchain~=0.0.10
 docx~=0.2.4
 spacy
+nlp
