@@ -95,10 +95,10 @@ bool_search=""
 count_str=""
 result_str=""
 response=""
-st.set_page_config(page_title="Chat GPT| Open AI| SAP Generative AI| Sid Bhattacharya|", page_icon=':bar_chart:', layout='wide')
+st.set_page_config(page_title="Chat GPT| Open AI| SAP Generative AI| Sid Bhattacharya", page_icon=':rocket:', layout='wide')
 
 
-st.header("👋 Ask Chatty McChatface v1")
+st.header("🚀 Ask Chatty McChatface v1")
 st.caption("Demo app that showcases how to do prompt engineering with Open AI and how to build an enterprise knowledge base using custom embeddings.")
 
 
