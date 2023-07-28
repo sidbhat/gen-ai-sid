@@ -107,7 +107,7 @@ with st.expander("💬 Features and Help"):
 Features :
 1. **Prompt Engineering** - Primed prompts to provide factual information and cite references. 
 2. **Prompt List** - Out of the box 20+ prompts based on job functions and roles.
-2. **Enterprise Search** - Link to an enterprise knowledge base. Shows how business domain and up to date information can be provided (Example - What is new the Successfactors 2023 1H Release) .
+2. **Enterprise Search** - Link to an enterprise knowledge base. Shows how domain and up to date information can be provided (Example - What is new in the Successfactors 2023 1H Release) .
 3. **Hide PII and Confidential Information** - Redact feature to hide PII data and other confidential information.
 4. **Save Results** - Export responses to a Word Document.
 5. **History** - View history of requests made.
