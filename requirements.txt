@@ -41,3 +41,4 @@ embedchain~=0.0.10
 docx~=0.2.4
 spacy
 nlp
+en_core_web_sm
