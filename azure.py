@@ -20,7 +20,7 @@ import pandas as pd
 # from googlesearch import search
 import requests
 from bs4 import BeautifulSoup
-from PyPDF2 import PdfReader
+# from PyPDF2 import PdfReader
 
 pd.set_option("max_colwidth", 300)
 nlp = spacy.load("en_core_web_sm")
