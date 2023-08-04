@@ -19,7 +19,7 @@ from embedchain import App
 if 'response' not in st.session_state:
     st.session_state.response = ''
 
-st.set_page_config(page_title="Knowledge Base Search", page_icon=':bar_chart:', layout='wide')
+st.set_page_config(page_title="Knowledge Base Search", page_icon=':rocket:', layout='wide')
 st.title("👋 Enterprise Search - HR Documents")
 sidebar_placeholder = st.sidebar.container()
 sidebar_placeholder.header('Knowledge base documents:')

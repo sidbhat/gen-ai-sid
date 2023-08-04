@@ -15,7 +15,7 @@ from langchain.document_loaders import WebBaseLoader
 from langchain.chat_models import ChatOpenAI
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
-os.environ['OPENAI_API_KEY'] = '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'
+
 index_name = 'demo-index'
 
 # initialize connection (get API key at app.pinecone.io)
@@ -25,35 +25,38 @@ pinecone.init(
 )
 
 # connect to index
-#print(pinecone)
+if index_name not in pinecone.list_indexes():
+    # if does not exist, create index
+    pinecone.create_index(
+        index_name,
+        dimension=1536,  # dimensionality of text-embedding-ada-002
+        metric='cosine',
+    )
 index = pinecone.Index(index_name)
-# view index stats
 print(index.describe_index_stats())
 
-#Load PDFS
-loader = PyPDFLoader("data/Competitive Battle Book.pdf")
-#loader = WebBaseLoader(["https://www.learnprompt.org/chat-gpt-prompts-for-business/"])
-#"https://www.constellationr.com/blog-news/c3-ai-ceo-tom-siebel-generative-ai-enterprise-search-will-have-wide-impact"])
-documents = loader.load()
-print(documents[:5])
-text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-texts = text_splitter.split_documents(documents)
 
+def load_knowledge_base(str_: str):
+    #Load PDFS
+    loader = PyPDFLoader(str_)
+    documents = loader.load()
+    print(documents[:5])
+    text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+    texts = text_splitter.split_documents(documents)
+    embeddings = OpenAIEmbeddings(openai_api_key=os.environ['OPENAI_API_KEY'])
+    Pinecone.from_texts([t.page_content for t in texts], embeddings, index_name=index_name)
 
-embeddings = OpenAIEmbeddings(openai_api_key=os.environ['OPENAI_API_KEY'])
-docsearch = Pinecone.from_texts([t.page_content for t in texts], embeddings, index_name=index_name)
-#docsearch = Pinecone.from_existing_index(index_name, embeddings)
+    llm = ChatOpenAI(temperature=0, openai_api_key=os.environ['OPENAI_API_KEY'], model_name="gpt-3.5-turbo", model_kwargs={'max_tokens':500})
+    chain = load_qa_chain(llm, chain_type="stuff")
 
-llm = ChatOpenAI(temperature=0, openai_api_key=os.environ['OPENAI_API_KEY'], model_name="gpt-3.5-turbo", model_kwargs={'max_tokens':4000})
-chain = load_qa_chain(llm, chain_type="stuff")
+    query = "Summarize the document " + str_
 
-query = "Summarize the document."
-
-docs = docsearch.similarity_search(query, include_metadata=True)
-print(len(docs))
-char_text_splitter = RecursiveCharacterTextSplitter(chunk_size=100, chunk_overlap=10)
-d = char_text_splitter.split_documents(docs)
-print(len(d))
-response = chain.run(input_documents=d[:1], question=query)
-print(response)
-print("done")
+    docsearch = Pinecone.from_existing_index(index_name, embeddings)
+    docs = docsearch.similarity_search(query, include_metadata=True)
+    print(len(docs))
+    char_text_splitter = RecursiveCharacterTextSplitter(chunk_size=100, chunk_overlap=10)
+    d = char_text_splitter.split_documents(docs)
+    print(len(d))
+    response = chain.run(input_documents=d[:1], question=query)
+    print(response)
+    print("done")

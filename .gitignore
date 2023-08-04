@@ -87,3 +87,6 @@ data/Competitive Battle Book.pdf
 data/Competitive Battle Book.pdf
 .streamlit/secrets.toml
 *.toml
+*.pdf
+*.pdf
+*.py
