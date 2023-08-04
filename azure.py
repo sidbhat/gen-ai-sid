@@ -17,7 +17,7 @@ import os
 import spacy
 import nlp
 import pandas as pd
-from googlesearch import search
+# from googlesearch import search
 import requests
 from bs4 import BeautifulSoup
 from PyPDF2 import PdfReader
@@ -220,9 +220,9 @@ def init_pinecone():
     print(index.describe_index_stats())
 
 
-def googlesearch(query, num_results=5):
-    search_results = list(search(query, num_results=num_results))
-    return search_results
+# def googlesearch(query, num_results=5):
+#     search_results = list(search(query, num_results=num_results))
+#     return search_results
 
 
 def extract_search_result_info(link):
@@ -350,18 +350,18 @@ def send_click():
 
             conversation.append({"role": "user", "content": st.session_state.prompt})
             download_content = ""
-            if st.session_state.google_search:
-                st.session_state.google_search_results = googlesearch(st.session_state.prompt)
-                c.caption("Response from Web Search")
-                for idx, link in enumerate(st.session_state.google_search_results, start=1):
-                    title, excerpt, date = extract_search_result_info(link)
-                    str_ = f"**[{title}]({link})**   " \
-                           f" {excerpt}   " \
-                           f" **Date:** {date}  " \
-                           f""
-                c.info(str_)
-                download_content = download_content + "\n" + redact_string(str_)
-            elif st.session_state.bool_search:
+            # if st.session_state.google_search:
+            #     st.session_state.google_search_results = googlesearch(st.session_state.prompt)
+            #     c.caption("Response from Web Search")
+            #     for idx, link in enumerate(st.session_state.google_search_results, start=1):
+            #         title, excerpt, date = extract_search_result_info(link)
+            #         str_ = f"**[{title}]({link})**   " \
+            #                f" {excerpt}   " \
+            #                f" **Date:** {date}  " \
+            #                f""
+            #     c.info(str_)
+            #     download_content = download_content + "\n" + redact_string(str_)
+            if st.session_state.bool_search:
                 # print("in bool search")
                 enterprise_search()
                 c.caption("Response from Enterprise Knowledge Base")
@@ -415,11 +415,11 @@ with streamlit_analytics.track():
             else:
                 st.session_state.bool_search = st.session_state.get("bool_search", False)
                 bool_search = c.checkbox('Include Enterprise Knowledge Base', key='bool_search',value=st.session_state.bool_search)
-            if st.session_state.get("google_search"):
-                google_search = c.checkbox('Include Web Search', key='google_search', value=st.session_state.google_search)
-            else:
-                st.session_state.google_search = st.session_state.get("google_search", False)
-                google_search = c.checkbox('Include Web Search', key='google_search', value=st.session_state.google_search)
+            # if st.session_state.get("google_search"):
+            #     google_search = c.checkbox('Include Web Search', key='google_search', value=st.session_state.google_search)
+            # else:
+            #     st.session_state.google_search = st.session_state.get("google_search", False)
+            #     google_search = c.checkbox('Include Web Search', key='google_search', value=st.session_state.google_search)
 
             st.session_state.redact = c.checkbox('Redact Confidential Information')
             submitted = st.button("✅ Send")
