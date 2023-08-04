@@ -17,19 +17,18 @@ import os
 import spacy
 import nlp
 import pandas as pd
-from googlesearch import search
+# from googlesearch import search
 import requests
 from bs4 import BeautifulSoup
 from PyPDF2 import PdfReader
 
-
 pd.set_option("max_colwidth", 300)
 nlp = spacy.load("en_core_web_sm")
 ruler = nlp.add_pipe("entity_ruler")
-patterns = [{"label": "ORG", "pattern": "Eightfold"},{"label": "ORG", "pattern": "Successfactors"},{"label": "ORG", "pattern": "SAP"},
+patterns = [{"label": "ORG", "pattern": "Eightfold"}, {"label": "ORG", "pattern": "Successfactors"},
+            {"label": "ORG", "pattern": "SAP"},
             {"label": "GPE", "pattern": [{"LOWER": "san"}, {"LOWER": "francisco"}]}]
 ruler.add_patterns(patterns)
-
 
 sap_options1 = ["", "What are the main features of the 1H 2023 release of the SAP SuccessFactors HXM Suite",
                 "How does the SAP SuccessFactors Opportunity Marketplace help employees",
@@ -69,16 +68,17 @@ sap_options4 = ["",
                 "Write me a VBA macro to create a presentation for a startup.",
                 "Generate a sample google sheet with sample movies dataset that can be used for exploratory analysis."]
 
-redact=""
-count_str=""
-result_str=""
-response=""
-st.set_page_config(page_title="Chat GPT| Open AI| SAP Generative AI| Sid Bhattacharya", page_icon=':rocket:', layout='wide')
+redact = ""
+count_str = ""
+result_str = ""
+response = ""
+st.set_page_config(page_title="Chat GPT| Open AI| SAP Generative AI| Sid Bhattacharya", page_icon=':rocket:',
+                   layout='wide')
 c = st.container()
 
-
 c.header("🚀 Ask Chatty McChatface v1")
-c.caption("Demo app that showcases how to do prompt engineering with Open AI and how to build an enterprise knowledge base using custom embeddings.")
+c.caption(
+    "Demo app that showcases how to do prompt engineering with Open AI and how to build an enterprise knowledge base using custom embeddings.")
 
 with c:
     with st.expander("💬 Features and Help"):
@@ -93,7 +93,7 @@ with c:
     6. **New Prompts** - To showcase enterprise search available under 'Customers and Partners' drop down.  New prompt to showcase demo-scripting under 'Content & Marketing'.
     ***
     Prompts : 
-    
+
     🕳 **Customers and Partners**
     1. What was <<enter company>> revenue in 2020.
     2. Compare <<enter company>> and <<enter company>> against Successfactors in the North America region.
@@ -140,17 +140,19 @@ selected_value2 = ''
 selected_value3 = ''
 selected_value4 = ''
 submitted = False
-conversation=[{"role": "system", "content": "You are a helpful assistant that provides detailed answers based on facts. Always cite references for your responses towards the end of the response. "}]
-user_input=''
-search_results=''
-download_content=''
+conversation = [{"role": "system",
+                 "content": "You are a helpful assistant that provides detailed answers based on facts. Always cite references for your responses towards the end of the response. "}]
+user_input = ''
+search_results = ''
+download_content = ''
 index_name = 'demo-index'
 embeddings = OpenAIEmbeddings(openai_api_key=os.environ['OPENAI_API_KEY'])
 llm = OpenAIChat(temperature=0, openai_api_key=os.environ['OPENAI_API_KEY'], model_name='gpt-3.5-turbo',
                  model_kwargs={'max_tokens': 1000})
 
+
 def load_knowledge_base():
-    #Load PDFS
+    # Load PDFS
     print("in knowledge base")
     print(uploaded_file)
     if uploaded_file:
@@ -174,7 +176,7 @@ def load_knowledge_base():
         # text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
         # texts = text_splitter.split_documents(documents)
         for t in texts:
-           print(t.capitalize())
+            print(t.capitalize())
         Pinecone.from_texts([t.capitalize() for t in texts], embeddings, index_name=index_name)
         sidebar_placeholder.write("Knowledge base updated")
         sidebar_placeholder.caption(pinecone.Index(index_name).describe_index_stats())
@@ -220,9 +222,9 @@ def init_pinecone():
     print(index.describe_index_stats())
 
 
-def googlesearch(query, num_results=5):
-    search_results = list(search(query, num_results=num_results))
-    return search_results
+# def googlesearch(query, num_results=5):
+#     search_results = list(search(query, num_results=num_results))
+#     return search_results
 
 
 def extract_search_result_info(link):
@@ -243,16 +245,17 @@ def extract_search_result_info(link):
 
     return title, excerpt, date
 
+
 def replace_ner(mytxt):
     clean_text = mytxt
     doc = nlp(mytxt)
     for ent in reversed(doc.ents):
-        clean_text = clean_text[:ent.start_char] +ent.label_ + clean_text[ent.end_char:]
-    print("Redacted text"+ clean_text)
+        clean_text = clean_text[:ent.start_char] + ent.label_ + clean_text[ent.end_char:]
+    print("Redacted text" + clean_text)
     return clean_text
 
-def enterprise_search():
 
+def enterprise_search():
     # connect to index
     docsearch = Pinecone.from_existing_index(index_name, embeddings)
 
@@ -282,30 +285,31 @@ def save_to_pptx(ai_content: str):
     # adding text
     if st.session_state.response:
         # for i in range(len(st.session_state.response)):
-            slide = prs.slides.add_slide(prs.slide_layouts[5])
-            title = slide.shapes.title
-            title.text = "Response from AI"
-            # For adjusting the  Margins in inches
-            left = top = width = height = Inches(1)
+        slide = prs.slides.add_slide(prs.slide_layouts[5])
+        title = slide.shapes.title
+        title.text = "Response from AI"
+        # For adjusting the  Margins in inches
+        left = top = width = height = Inches(1)
 
-            # creating textBox
-            txBox = slide.shapes.add_textbox(left-0.5, top - 0.5,
-                                              width * 9, height * 7)
-             # creating textFrames
-            tf = txBox.text_frame
-            tf.word_wrap = True
-            tf.text = st.session_state.prompt
-            p = tf.add_paragraph()
-            p.font.size = Pt(14)
-            p.text = st.session_state.response
-            p.alignment = PP_PARAGRAPH_ALIGNMENT.LEFT
+        # creating textBox
+        txBox = slide.shapes.add_textbox(left - 0.5, top - 0.5,
+                                         width * 9, height * 7)
+        # creating textFrames
+        tf = txBox.text_frame
+        tf.word_wrap = True
+        tf.text = st.session_state.prompt
+        p = tf.add_paragraph()
+        p.font.size = Pt(14)
+        p.text = st.session_state.response
+        p.alignment = PP_PARAGRAPH_ALIGNMENT.LEFT
 
     # save the output into binary form
     binary_output = BytesIO()
     prs.save(binary_output)
 
-
     return binary_output.getvalue()
+
+
 @st.cache_resource
 def build_footer():
     c1, c2, c3 = c.columns(3)
@@ -313,16 +317,21 @@ def build_footer():
         with c1:
             st.info('**Contact Me: [@sidbhat5](https://twitter.com/sidbhat5)**', icon="💡")
         with c2:
-            st.info('**Prompts Guide: [Prompts](https://sidbhat.blog/10-chat-gpt-prompts-to-help-you-succeed/)**', icon="💻")
+            st.info('**Prompts Guide: [Prompts](https://sidbhat.blog/10-chat-gpt-prompts-to-help-you-succeed/)**',
+                    icon="💻")
         with c3:
             st.info('**Google Collab: [Code](https://colab.research.google.com/drive/)**', icon="🧠")
-def redact_string(str_:str):
+
+
+def redact_string(str_: str):
     print(st.session_state.redact)
     if st.session_state.redact:
         return replace_ner(str_)
     else:
         return str_
-def download_docx(str_ : str):
+
+
+def download_docx(str_: str):
     doc = docx.Document()
 
     # Add Title Page followed by section summary
@@ -338,6 +347,7 @@ def download_docx(str_ : str):
     doc.save(binary_output)
     return binary_output.getvalue()
 
+
 def send_click():
     with c:
         with st.spinner("Fetching response..."):
@@ -350,36 +360,38 @@ def send_click():
 
             conversation.append({"role": "user", "content": st.session_state.prompt})
             download_content = ""
-            if st.session_state.google_search:
-                st.session_state.google_search_results = googlesearch(st.session_state.prompt)
-                c.caption("Response from Web Search")
-                for idx, link in enumerate(st.session_state.google_search_results, start=1):
-                    title, excerpt, date = extract_search_result_info(link)
-                    str_ = f"**[{title}]({link})**   " \
-                           f" {excerpt}   " \
-                           f" **Date:** {date}  " \
-                           f""
-                c.info(str_)
-                download_content = download_content + "\n" + redact_string(str_)
-            elif st.session_state.bool_search:
+            # if st.session_state.google_search:
+            #     st.session_state.google_search_results = googlesearch(st.session_state.prompt)
+            #     c.caption("Response from Web Search")
+            #     for idx, link in enumerate(st.session_state.google_search_results, start=1):
+            #         title, excerpt, date = extract_search_result_info(link)
+            #         str_ = f"**[{title}]({link})**   " \
+            #                f" {excerpt}   " \
+            #                f" **Date:** {date}  " \
+            #                f""
+            #     c.info(str_)
+            #     download_content = download_content + "\n" + redact_string(str_)
+            # el
+            if st.session_state.bool_search:
                 # print("in bool search")
                 enterprise_search()
                 c.caption("Response from Enterprise Knowledge Base")
                 c.success(redact_string(st.session_state.enterprise_search))
                 download_content = download_content + "\n" + st.session_state.enterprise_search
             else:
-                st.session_state.response = OpenAIService.open_ai_query(query='',model='gpt-4',gpt_conversation_history=conversation)
+                st.session_state.response = OpenAIService.open_ai_query(query='', model='gpt-4',
+                                                                        gpt_conversation_history=conversation)
                 conversation.append({"role": "assistant", "content": st.session_state.response})
                 download_content = st.session_state.response
                 c.caption("Response from Open AI")
                 c.info(redact_string(st.session_state.response))
 
             c.download_button(
-               label="⬇️ Download",
-               data=download_docx(redact_string(download_content)),
-               file_name="Chatty McChatface Response-" + datetime.datetime.now().strftime(
-                         "%m-%d-%Y-%H:%M:%S") + ".docx",
-               mime="docx"
+                label="⬇️ Download",
+                data=download_docx(redact_string(download_content)),
+                file_name="Chatty McChatface Response-" + datetime.datetime.now().strftime(
+                    "%m-%d-%Y-%H:%M:%S") + ".docx",
+                mime="docx"
             )
             # build_footer()
 
@@ -404,28 +416,31 @@ def build_dropdowns():
     # if (selected_value4 != ''):
     #     st.session_state.prompt = selected_value4
 
-# def main():
+    # def main():
     init_pinecone()
     # with st.form("my_form"):
+
+
 with streamlit_analytics.track():
-            build_dropdowns()
-            c.text_area("🦋 Ask something: ", key='prompt')
-            if st.session_state.get("bool_search"):
-                bool_search = c.checkbox('Include Enterprise Knowledge Base', key='bool_search',value=st.session_state.bool_search)
-            else:
-                st.session_state.bool_search = st.session_state.get("bool_search", False)
-                bool_search = c.checkbox('Include Enterprise Knowledge Base', key='bool_search',value=st.session_state.bool_search)
-            if st.session_state.get("google_search"):
-                google_search = c.checkbox('Include Web Search', key='google_search', value=st.session_state.google_search)
-            else:
-                st.session_state.google_search = st.session_state.get("google_search", False)
-                google_search = c.checkbox('Include Web Search', key='google_search', value=st.session_state.google_search)
+    build_dropdowns()
+    c.text_area("🦋 Ask something: ", key='prompt')
+    if st.session_state.get("bool_search"):
+        bool_search = c.checkbox('Include Enterprise Knowledge Base', key='bool_search',
+                                 value=st.session_state.bool_search)
+    else:
+        st.session_state.bool_search = st.session_state.get("bool_search", False)
+        bool_search = c.checkbox('Include Enterprise Knowledge Base', key='bool_search',
+                                 value=st.session_state.bool_search)
+    # if st.session_state.get("google_search"):
+    #     google_search = c.checkbox('Include Web Search', key='google_search', value=st.session_state.google_search)
+    # else:
+    #     st.session_state.google_search = st.session_state.get("google_search", False)
+    #     google_search = c.checkbox('Include Web Search', key='google_search', value=st.session_state.google_search)
 
-            st.session_state.redact = c.checkbox('Redact Confidential Information')
-            submitted = st.button("✅ Send")
-            if submitted:
-                send_click()
-
+    st.session_state.redact = c.checkbox('Redact Confidential Information')
+    submitted = st.button("✅ Send")
+    if submitted:
+        send_click()
 
 # if __name__ == "__main__":
 #     main()
