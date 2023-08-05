@@ -40,6 +40,7 @@ bs4~=0.0.1
 embedchain~=0.0.10
 python-docx
 spacy==3.5.0
+https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.5.0/en_core_web_sm-3.5.0-py3-none-any.whl
 nlp~=0.4.0
 pandas~=1.5.3
 beautifulsoup4~=4.12.2
