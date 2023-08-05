@@ -38,7 +38,7 @@ unstructured
 streamlit_option_menu
 bs4~=0.0.1
 embedchain~=0.0.10
-docx~=0.2.4
+python-docx
 spacy==3.5.0
 nlp~=0.4.0
 pandas~=1.5.3
