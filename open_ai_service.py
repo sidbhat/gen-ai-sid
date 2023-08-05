@@ -38,6 +38,8 @@ class OpenAIService:
             payload = OpenAIService._generate_payload_for_model(query, model, gpt_conversation_history)
 
             response = requests.request("POST", url, headers=headers, json=payload, timeout=Config.OPEN_AI_TIMEOUT)
+            print(response.json())
+
             if response.status_code != HTTPStatus.OK:
                 logging.info("Status code = %s: %s", response.status_code, response.text)
                 return "Error retrieving results"

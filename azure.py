@@ -21,6 +21,7 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 # from PyPDF2 import PdfReader
+import time
 
 pd.set_option("max_colwidth", 300)
 nlp = spacy.load("en_core_web_sm")
@@ -75,12 +76,16 @@ response = ""
 st.set_page_config(page_title="Chat GPT| Open AI| SAP Generative AI| Sid Bhattacharya", page_icon=':rocket:',
                    layout='wide')
 c = st.container()
+header = c.container()
+input_container = c.container()
+output_container = c.container()
 
-c.header("🚀 Ask Chatty McChatface v1")
-c.caption(
+header.header("🚀 Ask Chatty McChatface v1")
+header.caption(
     "Demo app that showcases how to do prompt engineering with Open AI and how to build an enterprise knowledge base using custom embeddings.")
+bar = header.empty()
 
-with c:
+with header:
     with st.expander("💬 Features and Help"):
         st.write('''
     Features :
@@ -142,6 +147,9 @@ selected_value4 = ''
 submitted = False
 conversation = [{"role": "system",
                  "content": "You are a helpful assistant that provides detailed answers based on facts. Always cite references for your responses towards the end of the response. "}]
+if "conversations" not in st.session_state:
+    st.session_state["conversations"] = ""
+
 user_input = ''
 search_results = ''
 download_content = ''
@@ -151,54 +159,54 @@ llm = OpenAIChat(temperature=0, openai_api_key=os.environ['OPENAI_API_KEY'], mod
                  model_kwargs={'max_tokens': 1000})
 
 
-def load_knowledge_base():
-    # Load PDFS
-    print("in knowledge base")
-    print(uploaded_file)
-    if uploaded_file:
-        pdf_reader = PdfReader(uploaded_file)
-        text = ""
-        for page in pdf_reader.pages:
-            text += page.extract_text()
-
-        # Create chunks
-        text_splitter = CharacterTextSplitter(
-            separator="\n",
-            chunk_size=1000,
-            chunk_overlap=200,
-            length_function=len
-        )
-        texts = text_splitter.split_text(text)
-
-        # loader = PyPDFLoader(uploaded_file.name)
-        # documents = loader.load()
-        # print(documents[:5])
-        # text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-        # texts = text_splitter.split_documents(documents)
-        for t in texts:
-            print(t.capitalize())
-        Pinecone.from_texts([t.capitalize() for t in texts], embeddings, index_name=index_name)
-        sidebar_placeholder.write("Knowledge base updated")
-        sidebar_placeholder.caption(pinecone.Index(index_name).describe_index_stats())
-        # chain = load_qa_chain(llm, chain_type="stuff")
-        #
-        # query = "Summarize the document " + str_
-        #
-        # docsearch = Pinecone.from_existing_index(index_name, embeddings)
-        # docs = docsearch.similarity_search(query, include_metadata=True)
-        # print(len(docs))
-        # char_text_splitter = RecursiveCharacterTextSplitter(chunk_size=100, chunk_overlap=10)
-        # d = char_text_splitter.split_documents(docs)
-        # print(len(d))
-        # response = chain.run(input_documents=d[:1], question=query)
-        # print(response)
-        # print("done")
-
-
-uploaded_file = sidebar_placeholder.file_uploader("🧠 Add to Knowledge Base", type=["PDF"])
-# if index_name in pinecone.list_indexes():
-#     sidebar_placeholder.caption(pinecone.Index(index_name).describe_index_stats())
-sidebar_placeholder.button("Upload", on_click=load_knowledge_base(), disabled=True)
+# def load_knowledge_base():
+#     # Load PDFS
+#     print("in knowledge base")
+#     print(uploaded_file)
+#     if uploaded_file:
+#         pdf_reader = PdfReader(uploaded_file)
+#         text = ""
+#         for page in pdf_reader.pages:
+#             text += page.extract_text()
+#
+#         # Create chunks
+#         text_splitter = CharacterTextSplitter(
+#             separator="\n",
+#             chunk_size=1000,
+#             chunk_overlap=200,
+#             length_function=len
+#         )
+#         texts = text_splitter.split_text(text)
+#
+#         # loader = PyPDFLoader(uploaded_file.name)
+#         # documents = loader.load()
+#         # print(documents[:5])
+#         # text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+#         # texts = text_splitter.split_documents(documents)
+#         for t in texts:
+#             print(t.capitalize())
+#         Pinecone.from_texts([t.capitalize() for t in texts], embeddings, index_name=index_name)
+#         sidebar_placeholder.write("Knowledge base updated")
+#         sidebar_placeholder.caption(pinecone.Index(index_name).describe_index_stats())
+#         # chain = load_qa_chain(llm, chain_type="stuff")
+#         #
+#         # query = "Summarize the document " + str_
+#         #
+#         # docsearch = Pinecone.from_existing_index(index_name, embeddings)
+#         # docs = docsearch.similarity_search(query, include_metadata=True)
+#         # print(len(docs))
+#         # char_text_splitter = RecursiveCharacterTextSplitter(chunk_size=100, chunk_overlap=10)
+#         # d = char_text_splitter.split_documents(docs)
+#         # print(len(d))
+#         # response = chain.run(input_documents=d[:1], question=query)
+#         # print(response)
+#         # print("done")
+#
+#
+# # uploaded_file = sidebar_placeholder.file_uploader("🧠 Add to Knowledge Base", type=["PDF"])
+# # if index_name in pinecone.list_indexes():
+# #     sidebar_placeholder.caption(pinecone.Index(index_name).describe_index_stats())
+# # sidebar_placeholder.button("Upload", on_click=load_knowledge_base(), disabled=True)
 
 sidebar_placeholder.header('🍁 History')
 
@@ -255,13 +263,13 @@ def replace_ner(mytxt):
     return clean_text
 
 
-def enterprise_search():
+def enterprise_search(prompt_input: str):
     # connect to index
     docsearch = Pinecone.from_existing_index(index_name, embeddings)
 
-    query = "You are a friendly knowledge bot that provides factual responses from the given context in sentences and bullet points. Always end with a line that cites references and paragraphs used for your results." + st.session_state.prompt
+    query = "You are a helpful assistant that provides detailed answers based on facts based on the given context. Provide your response in the format {question} {answer} followed by {references}. Always cite references for your responses towards the end of the response." + st.session_state.prompt
     chain = load_qa_chain(llm, chain_type="stuff")
-    docs = docsearch.similarity_search(st.session_state.prompt)
+    docs = docsearch.similarity_search(prompt_input)
     # print(docs)
     st.session_state.docs = docs
     st.session_state.enterprise_search = chain.run(input_documents=docs, question=query)
@@ -309,6 +317,16 @@ def save_to_pptx(ai_content: str):
 
     return binary_output.getvalue()
 
+def reset_context():
+    del st.session_state["conversations"]
+    del st.session_state["prompt"]
+    del st.session_state["prompt_list"]
+    del st.session_state["key"]
+    prompt_input=""
+    selected_value1=""
+    bar.warning(":information_source: Conversation cleared....")
+    time.sleep(2)
+    bar.empty()
 
 @st.cache_resource
 def build_footer():
@@ -348,41 +366,39 @@ def download_docx(str_: str):
     return binary_output.getvalue()
 
 
-def send_click():
-    with c:
-        with st.spinner("Fetching response..."):
+def send_click(prompt_input :str):
+   with st.spinner("Fetching response..."):
+      with output_container:
+            if st.session_state.conversations:
+                st.session_state.conversations.append({"role": "user", "content": prompt_input})
+            else:
+                ai_role = "You are a helpful assistant that provides detailed answers based on facts. Provide your response in the format {question} {answer} followed by {references}. Always cite references for your responses towards the end of the response."  # NOQA: E501
+                st.session_state.conversations = [
+                    {"role": "system", "content": ai_role},
+                    {"role": "user", "content": prompt_input},
+                ]
+            conversation.append({"role": "user", "content":prompt_input})
+            st.session_state['key'] = st.session_state['key'] + '~~~' + prompt_input.capitalize()
+            if st.session_state['key']:
+               keys_list = st.session_state['key'].split('~~~')
+               keys_list_reversed = keys_list[::-1]
+               with sidebar_placeholder:
+                    for keys in keys_list_reversed:
+                        if (keys != ''):
+                           sidebar_placeholder.info(":thread: "+keys)
 
-            st.session_state['key'] = st.session_state['key'] + '~~~' + st.session_state.prompt.capitalize()
-            with sidebar_placeholder:
-                for keys in st.session_state['key'].split('~~~'):
-                    if (keys != ''):
-                        sidebar_placeholder.info(keys)
-
-            conversation.append({"role": "user", "content": st.session_state.prompt})
-            download_content = ""
-            # if st.session_state.google_search:
-            #     st.session_state.google_search_results = googlesearch(st.session_state.prompt)
-            #     c.caption("Response from Web Search")
-            #     for idx, link in enumerate(st.session_state.google_search_results, start=1):
-            #         title, excerpt, date = extract_search_result_info(link)
-            #         str_ = f"**[{title}]({link})**   " \
-            #                f" {excerpt}   " \
-            #                f" **Date:** {date}  " \
-            #                f""
-            #     c.info(str_)
-            #     download_content = download_content + "\n" + redact_string(str_)
-            # el
             if st.session_state.bool_search:
-                # print("in bool search")
-                enterprise_search()
                 c.caption("Response from Enterprise Knowledge Base")
+                enterprise_search(prompt_input)
                 c.success(redact_string(st.session_state.enterprise_search))
-                download_content = download_content + "\n" + st.session_state.enterprise_search
+                download_content = st.session_state.enterprise_search
             else:
                 st.session_state.response = OpenAIService.open_ai_query(query='', model='gpt-4',
-                                                                        gpt_conversation_history=conversation)
+                                                                        gpt_conversation_history=st.session_state.conversations)
                 conversation.append({"role": "assistant", "content": st.session_state.response})
+
                 download_content = st.session_state.response
+                print(conversation)
                 c.caption("Response from Open AI")
                 c.info(redact_string(st.session_state.response))
 
@@ -394,53 +410,35 @@ def send_click():
                 mime="docx"
             )
             # build_footer()
+init_pinecone()
 
+def main():
 
-def build_dropdowns():
-    # c1 = c.columns(1)
-    with c:
-        selected_value1 = st.selectbox("💛 Prompts", sap_options1, key='competitor')
-        # with c2:
-        #     selected_value2 = st.selectbox("💡 Industry & Emerging Trends", sap_options2, key='industry', index=0)
-        # with c3:
-        #     selected_value3 = st.selectbox("🗯 Content Generation (Sales & Marketing)", sap_options3, key='talk', index=0)
-        # with c4:
-        #     selected_value4 = st.selectbox("💛 Data & Code Generation", sap_options4, key='demo', index=0)
+        with streamlit_analytics.track():
+           with input_container:
+              # with st.form(key = 'my_form', clear_on_submit=True):
+                selected_value1 = st.selectbox("💛 Prompts", sap_options1, key='prompt_list', index=0)
+                if ( (selected_value1 != '' and "prompt" in st.session_state and st.session_state.prompt == '') or ("prompt" in st.session_state and st.session_state.prompt in sap_options1)):
+                    st.session_state.prompt = selected_value1
+                prompt_input = st.text_area("🦋 Ask something: ", key='prompt')
+                if st.session_state.get("bool_search"):
+                    bool_search = st.checkbox('Include Enterprise Knowledge Base', key='bool_search',
+                                         value=st.session_state.bool_search)
+                else:
+                    st.session_state.bool_search = st.session_state.get("bool_search", False)
+                    bool_search = st.checkbox('Include Enterprise Knowledge Base', key='bool_search',
+                                         value=st.session_state.bool_search)
+                st.session_state.redact = False
+              # st.checkbox('Redact Confidential Information')
+              #   col1, col2 = c.columns(2)
+                # with col1:
+                submitted = st.button("✅ Send Message")
+                if submitted:
+                      send_click(prompt_input)
+                # with col2:
+                clear = st.button(":negative_squared_cross_mark: Clear Conversation")
+                if clear:
+                      reset_context()
 
-    if (selected_value1 != ''):
-        st.session_state.prompt = selected_value1
-    # if (selected_value2 != ''):
-    #     st.session_state.prompt = selected_value2
-    # if (selected_value3 != ''):
-    #     st.session_state.prompt = selected_value3
-    # if (selected_value4 != ''):
-    #     st.session_state.prompt = selected_value4
-
-    # def main():
-    init_pinecone()
-    # with st.form("my_form"):
-
-
-with streamlit_analytics.track():
-    build_dropdowns()
-    c.text_area("🦋 Ask something: ", key='prompt')
-    if st.session_state.get("bool_search"):
-        bool_search = c.checkbox('Include Enterprise Knowledge Base', key='bool_search',
-                                 value=st.session_state.bool_search)
-    else:
-        st.session_state.bool_search = st.session_state.get("bool_search", False)
-        bool_search = c.checkbox('Include Enterprise Knowledge Base', key='bool_search',
-                                 value=st.session_state.bool_search)
-    # if st.session_state.get("google_search"):
-    #     google_search = c.checkbox('Include Web Search', key='google_search', value=st.session_state.google_search)
-    # else:
-    #     st.session_state.google_search = st.session_state.get("google_search", False)
-    #     google_search = c.checkbox('Include Web Search', key='google_search', value=st.session_state.google_search)
-
-    st.session_state.redact = c.checkbox('Redact Confidential Information')
-    submitted = st.button("✅ Send")
-    if submitted:
-        send_click()
-
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+   main()
