@@ -1,10 +1,7 @@
 import streamlit_analytics
 from open_ai_service import OpenAIService
 import streamlit as st
-from pptx import Presentation
 from io import BytesIO
-from pptx.util import Inches, Pt
-from pptx.enum.text import PP_PARAGRAPH_ALIGNMENT
 import docx
 import datetime
 import pinecone
@@ -280,43 +277,43 @@ def enterprise_search(prompt_input: str):
     #         cost = total_tokens * 0.002 / 1000
 
 
-def save_to_pptx(ai_content: str):
-    prs = Presentation()
-    title_slide_layout = prs.slide_layouts[0]
-    slide = prs.slides.add_slide(title_slide_layout)
-    title = slide.shapes.title
-    subtitle = slide.placeholders[1]
-    # print(ai_content)
-    title.text = "Generated Content"
-    subtitle.text = "By Chatty McChatface"
-
-    # adding text
-    if st.session_state.response:
-        # for i in range(len(st.session_state.response)):
-        slide = prs.slides.add_slide(prs.slide_layouts[5])
-        title = slide.shapes.title
-        title.text = "Response from AI"
-        # For adjusting the  Margins in inches
-        left = top = width = height = Inches(1)
-
-        # creating textBox
-        txBox = slide.shapes.add_textbox(left - 0.5, top - 0.5,
-                                         width * 9, height * 7)
-        # creating textFrames
-        tf = txBox.text_frame
-        tf.word_wrap = True
-        tf.text = st.session_state.prompt
-        p = tf.add_paragraph()
-        p.font.size = Pt(14)
-        p.text = st.session_state.response
-        p.alignment = PP_PARAGRAPH_ALIGNMENT.LEFT
-
-    # save the output into binary form
-    binary_output = BytesIO()
-    prs.save(binary_output)
-
-    return binary_output.getvalue()
-
+# def save_to_pptx(ai_content: str):
+#     prs = Presentation()
+#     title_slide_layout = prs.slide_layouts[0]
+#     slide = prs.slides.add_slide(title_slide_layout)
+#     title = slide.shapes.title
+#     subtitle = slide.placeholders[1]
+#     # print(ai_content)
+#     title.text = "Generated Content"
+#     subtitle.text = "By Chatty McChatface"
+#
+#     # adding text
+#     if st.session_state.response:
+#         # for i in range(len(st.session_state.response)):
+#         slide = prs.slides.add_slide(prs.slide_layouts[5])
+#         title = slide.shapes.title
+#         title.text = "Response from AI"
+#         # For adjusting the  Margins in inches
+#         left = top = width = height = Inches(1)
+#
+#         # creating textBox
+#         txBox = slide.shapes.add_textbox(left - 0.5, top - 0.5,
+#                                          width * 9, height * 7)
+#         # creating textFrames
+#         tf = txBox.text_frame
+#         tf.word_wrap = True
+#         tf.text = st.session_state.prompt
+#         p = tf.add_paragraph()
+#         p.font.size = Pt(14)
+#         p.text = st.session_state.response
+#         p.alignment = PP_PARAGRAPH_ALIGNMENT.LEFT
+#
+#     # save the output into binary form
+#     binary_output = BytesIO()
+#     prs.save(binary_output)
+#
+#     return binary_output.getvalue()
+#
 def reset_context():
     del st.session_state["conversations"]
     del st.session_state["prompt"]
