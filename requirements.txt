@@ -46,4 +46,4 @@ pandas~=1.5.3
 beautifulsoup4~=4.12.2
 pypdf2~=3.0.1
 googlesearch-python
-
+tiktoken
