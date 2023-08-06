@@ -66,6 +66,7 @@ sap_options4 = ["",
                 "Write me a VBA macro to create a presentation for a startup.",
                 "Generate a sample google sheet with sample movies dataset that can be used for exploratory analysis."]
 
+next_action = ["","Summarize this response highlighting the key takeaways.", "Expand on this response to provide more details.", "Explain this response like I am five."]
 redact = ""
 count_str = ""
 result_str = ""
@@ -76,7 +77,6 @@ c = st.container()
 header = c.container()
 input_container = c.container()
 output_container = c.container()
-
 header.header("🚀 Ask Chatty McChatface v1")
 header.caption(
     "Demo app that showcases how to do prompt engineering with Open AI and how to build an enterprise knowledge base using custom embeddings.")
@@ -137,15 +137,22 @@ if 'response' not in st.session_state:
 if 'key' not in st.session_state:
     st.session_state['key'] = ''
 
+if "conversations" not in st.session_state:
+    st.session_state["conversations"] = ""
+
+if "clear" not in st.session_state:
+    st.session_state["clear"] = False
+
 selected_value1 = ''
 selected_value2 = ''
 selected_value3 = ''
 selected_value4 = ''
 submitted = False
+
 conversation = [{"role": "system",
                  "content": "You are a helpful assistant that provides detailed answers based on facts. Always cite references for your responses towards the end of the response. "}]
-if "conversations" not in st.session_state:
-    st.session_state["conversations"] = ""
+
+
 
 user_input = ''
 search_results = ''
@@ -154,7 +161,6 @@ index_name = 'demo-index'
 embeddings = OpenAIEmbeddings(openai_api_key=os.environ['OPENAI_API_KEY'])
 llm = OpenAIChat(temperature=0, openai_api_key=os.environ['OPENAI_API_KEY'], model_name='gpt-3.5-turbo',
                  model_kwargs={'max_tokens': 1000})
-
 
 # def load_knowledge_base():
 #     # Load PDFS
@@ -270,7 +276,7 @@ def enterprise_search(prompt_input: str):
     # print(docs)
     st.session_state.docs = docs
     st.session_state.enterprise_search = chain.run(input_documents=docs, question=query)
-    print(st.session_state.enterprise_search)
+    # print(st.session_state.enterprise_search)
     # total_tokens = response.get("total_tokens")
     # # pricing logic: https://openai.com/pricing#language-models
     #     if st.session_state.model == "gpt-3.5-turbo":
@@ -315,15 +321,18 @@ def enterprise_search(prompt_input: str):
 #     return binary_output.getvalue()
 #
 def reset_context():
-    del st.session_state["conversations"]
-    del st.session_state["prompt"]
-    del st.session_state["prompt_list"]
-    del st.session_state["key"]
-    prompt_input=""
-    selected_value1=""
-    bar.warning(":information_source: Conversation cleared....")
-    time.sleep(2)
-    bar.empty()
+    if st.session_state.get("clear"):
+        bar.warning(":information_source: Conversation cleared....")
+        time.sleep(2)
+        bar.empty()
+        del st.session_state["conversations"]
+        st.session_state["prompt_list"] = sap_options1[0]
+        st.session_state["prompt"] = ''
+        st.session_state["bool_search"] = False
+        st.session_state['key']=''
+        selected_value1=""
+        conversation=""
+
 
 @st.cache_resource
 def build_footer():
@@ -363,56 +372,69 @@ def download_docx(str_: str):
     return binary_output.getvalue()
 
 
+
 def send_click(prompt_input :str):
-   with st.spinner("Fetching response..."):
-      with output_container:
-            if st.session_state.conversations:
-                st.session_state.conversations.append({"role": "user", "content": prompt_input})
-            else:
-                ai_role = "You are a helpful assistant that provides detailed answers based on facts. Provide your response in the format {question} {answer} followed by {references}. Always cite references for your responses towards the end of the response."  # NOQA: E501
-                st.session_state.conversations = [
-                    {"role": "system", "content": ai_role},
-                    {"role": "user", "content": prompt_input},
-                ]
-            conversation.append({"role": "user", "content":prompt_input})
-            st.session_state['key'] = st.session_state['key'] + '~~~' + prompt_input.capitalize()
-            if st.session_state['key']:
-               keys_list = st.session_state['key'].split('~~~')
-               keys_list_reversed = keys_list[::-1]
-               with sidebar_placeholder:
-                    for keys in keys_list_reversed:
-                        if (keys != ''):
-                           sidebar_placeholder.info(":thread: "+keys)
+  with c:
+      if prompt_input == '':
+          bar.warning(":information_source: Enter a request...")
+          time.sleep(2)
+          bar.empty()
+      else:
+           with st.spinner("Fetching response...:coffee:"):
+              with output_container:
+                    if st.session_state.conversations:
+                        st.session_state.conversations.append({"role": "user", "content": prompt_input})
+                    else:
+                        ai_role = "You are a helpful SAP assistant that provides detailed answers based on facts. Provide your response in the format {question} {answer} followed by {references}. Always cite references for your responses towards the end of the response."  # NOQA: E501
+                        st.session_state.conversations = [
+                            {"role": "system", "content": ai_role},
+                            {"role": "user", "content": prompt_input},
+                        ]
+                    conversation.append({"role": "user", "content":prompt_input})
+                    st.session_state['key'] = st.session_state['key'] + '~~~' + prompt_input.capitalize()
+                    if st.session_state['key']:
+                       keys_list = st.session_state['key'].split('~~~')
+                       keys_list_reversed = keys_list[::-1]
+                       with sidebar_placeholder:
+                            cnt=1
+                            for keys in keys_list_reversed:
+                                if (keys != ''):
+                                   sidebar_placeholder.info(":thread: "+ str(cnt) +'/'+ str(len(keys_list)-1)+' '+keys)
+                                   cnt = cnt+1
 
-            if st.session_state.bool_search:
-                c.caption("Response from Enterprise Knowledge Base")
-                enterprise_search(prompt_input)
-                c.success(redact_string(st.session_state.enterprise_search))
-                download_content = st.session_state.enterprise_search
-            else:
-                st.session_state.response = OpenAIService.open_ai_query(query='', model='gpt-4',
-                                                                        gpt_conversation_history=st.session_state.conversations)
-                conversation.append({"role": "assistant", "content": st.session_state.response})
+                    if st.session_state.bool_search:
+                        c.caption(":eight_spoked_asterisk: Response from Enterprise Knowledge Base")
+                        enterprise_search(prompt_input)
+                        c.success(redact_string(st.session_state.enterprise_search))
+                        st.session_state.conversations.append({"role": "assistant", "content": st.session_state.enterprise_search})
+                        download_content = st.session_state.enterprise_search
+                    else:
+                        st.session_state.response = OpenAIService.open_ai_query(query='', model='gpt-4',
+                                                                                gpt_conversation_history=st.session_state.conversations)
+                        st.session_state.conversations.append({"role": "assistant", "content": st.session_state.response})
+                        download_content = st.session_state.response
+                        #print(conversation)
+                        c.caption(":robot_face: Response from Open AI")
+                        c.info(redact_string(st.session_state.response))
 
-                download_content = st.session_state.response
-                print(conversation)
-                c.caption("Response from Open AI")
-                c.info(redact_string(st.session_state.response))
+                    if download_content != '':
+                        c.download_button(
+                                    label="⬇️ Download",
+                                    data=download_docx(redact_string(download_content)),
+                                    file_name="Chatty McChatface Response-" + datetime.datetime.now().strftime(
+                                        "%m-%d-%Y-%H:%M:%S") + ".docx",
+                                    mime="docx"
+                                )
 
-            c.download_button(
-                label="⬇️ Download",
-                data=download_docx(redact_string(download_content)),
-                file_name="Chatty McChatface Response-" + datetime.datetime.now().strftime(
-                    "%m-%d-%Y-%H:%M:%S") + ".docx",
-                mime="docx"
-            )
             # build_footer()
 init_pinecone()
 
 def main():
-
         with streamlit_analytics.track():
            with input_container:
+                st.session_state.clear = c.button(":negative_squared_cross_mark: Clear Conversation")
+                if st.session_state.clear:
+                    reset_context()
               # with st.form(key = 'my_form', clear_on_submit=True):
                 selected_value1 = st.selectbox("💛 Prompts", sap_options1, key='prompt_list', index=0)
                 if ( (selected_value1 != '' and "prompt" in st.session_state and st.session_state.prompt == '') or ("prompt" in st.session_state and st.session_state.prompt in sap_options1)):
@@ -430,12 +452,11 @@ def main():
               #   col1, col2 = c.columns(2)
                 # with col1:
                 submitted = st.button("✅ Send Message")
+
                 if submitted:
                       send_click(prompt_input)
-                # with col2:
-                clear = st.button(":negative_squared_cross_mark: Clear Conversation")
-                if clear:
-                      reset_context()
+
+
 
 if __name__ == "__main__":
    main()

@@ -34,11 +34,11 @@ class OpenAIService:
             url = f"{Config.OPEN_AI_SVC_URL}/api/v1/completions"
             token = OpenAIService.get_token()
             headers = {"Content-Type": "application/json", "Authorization": f"Bearer {token}"}
-            print(gpt_conversation_history)
+            # print(gpt_conversation_history)
             payload = OpenAIService._generate_payload_for_model(query, model, gpt_conversation_history)
 
             response = requests.request("POST", url, headers=headers, json=payload, timeout=Config.OPEN_AI_TIMEOUT)
-            print(response.json())
+            # print(response.json())
 
             if response.status_code != HTTPStatus.OK:
                 logging.info("Status code = %s: %s", response.status_code, response.text)
