@@ -14,7 +14,7 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.document_loaders import WebBaseLoader
 from langchain.chat_models import ChatOpenAI
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-
+from PyPDF2 import PdfReader
 
 index_name = 'demo-index'
 
@@ -34,6 +34,7 @@ if index_name not in pinecone.list_indexes():
     )
 index = pinecone.Index(index_name)
 print(index.describe_index_stats())
+
 
 
 def load_knowledge_base(str_: str):
@@ -60,3 +61,6 @@ def load_knowledge_base(str_: str):
     response = chain.run(input_documents=d[:1], question=query)
     print(response)
     print("done")
+
+uploaded_file = '/Users/I806232/Documents/gen-ai/data/SAP SuccessFactors Time Management Feature List vH1_2023.pdf'
+load_knowledge_base(uploaded_file)

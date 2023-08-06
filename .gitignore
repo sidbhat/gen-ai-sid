@@ -91,3 +91,4 @@ data/Competitive Battle Book.pdf
 *.pdf
 *.py
 *.toml
+*.pyc

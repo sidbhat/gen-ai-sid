@@ -28,7 +28,13 @@ patterns = [{"label": "ORG", "pattern": "Eightfold"}, {"label": "ORG", "pattern"
             {"label": "GPE", "pattern": [{"LOWER": "san"}, {"LOWER": "francisco"}]}]
 ruler.add_patterns(patterns)
 
-sap_options1 = ["", "What are the main features of the 1H 2023 release of the SAP SuccessFactors HXM Suite",
+sap_options1 = ["", "Tell me the features of mobile time recording for iOS and Android",
+                "Provide the key highlights from Time Management 1H 2023 Release Notes",
+                "What are the features of Weekly Time Sheet",
+                "What are the features available for grace rule rounding and rest-rules",
+                "How do we position our solution offerings in the Time Management space?",
+                "What is our Time Management Solution Extensions Strategy",
+                "What are the main features of the 1H 2023 release of the SAP SuccessFactors HXM Suite",
                 "How does the SAP SuccessFactors Opportunity Marketplace help employees",
                 "How can I get ready for Talent Intelligence Hub?",
                 "How does Talent Intelligence Hub interact with other SAP SuccessFactors modules?",
@@ -36,7 +42,6 @@ sap_options1 = ["", "What are the main features of the 1H 2023 release of the SA
                 "What are some examples of SAP Solution Extensions",
                 "What is Eightfold and how does it integrate with SAP?",
                 "What is Beamery and how does it integrate with SAP?",
-                "Please generate a job description for a [Digital Marketing Specialist].The ideal candidate should have skills in [SEO/SEM, marketing database, email, social media, and display advertising campaigns]. \n They must be able to have experience in [leading integrated digital marketing campaigns from concept to execution] and have additional experience in [ knowledge of website analytics tools]. Please include the job responsibilities and required qualifications.Ensure the job description does not have bias and is inclusive.",
                 "What is the learning plan to be become a Successfactors LMS consultant? What skills do I need?",
                 "What are the different types of partnerships that SAP offers? What is a solution extension partner?",
                 "How do I change the theme in the Successfactors application? Provide steps for an adminstrator",
