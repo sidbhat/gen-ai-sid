@@ -30,7 +30,7 @@ ruler.add_patterns(patterns)
 
 sap_options1 = ["", "Tell me the features of mobile time recording for iOS and Android",
                 "Provide the key highlights from Time Management 1H 2023 Release Notes",
-                "What are the features of Weekly Time Sheet",
+                "What are the new features of the Weekly Time Sheet",
                 "What are the features available for grace rule rounding and rest-rules",
                 "How do we position our solution offerings in the Time Management space?",
                 "What is our Time Management Solution Extensions Strategy",
@@ -72,7 +72,6 @@ sap_options4 = ["",
                 "Generate a sample google sheet with sample movies dataset that can be used for exploratory analysis."]
 
 next_action = ["","Summarize this response highlighting the key takeaways.", "Expand on this response to provide more details.", "Explain this response like I am five."]
-redact = ""
 count_str = ""
 result_str = ""
 response = ""
@@ -80,6 +79,8 @@ st.set_page_config(page_title="Chat GPT| Open AI| SAP Generative AI| Sid Bhattac
                    layout='wide')
 c = st.container()
 header = c.container()
+# loading_placeholder = c.container()
+
 input_container = c.container()
 output_container = c.container()
 header.header("🚀 Ask Chatty McChatface v1")
@@ -163,9 +164,18 @@ user_input = ''
 search_results = ''
 download_content = ''
 index_name = 'demo-index'
-embeddings = OpenAIEmbeddings(openai_api_key=os.environ['OPENAI_API_KEY'])
-llm = OpenAIChat(temperature=0, openai_api_key=os.environ['OPENAI_API_KEY'], model_name='gpt-3.5-turbo',
+
+@st.cache_resource
+def init_model():
+    return OpenAIEmbeddings(openai_api_key=os.environ['OPENAI_API_KEY'])
+
+embeddings = init_model()
+
+@st.cache_resource
+def init_llm():
+  return OpenAIChat(temperature=0, openai_api_key=os.environ['OPENAI_API_KEY'], model_name='gpt-3.5-turbo',
                  model_kwargs={'max_tokens': 1000})
+llm = init_llm()
 
 # def load_knowledge_base():
 #     # Load PDFS
@@ -334,6 +344,7 @@ def reset_context():
         st.session_state["prompt_list"] = sap_options1[0]
         st.session_state["prompt"] = ''
         st.session_state["bool_search"] = False
+        st.session_state["redact"] = False
         st.session_state['key']=''
         selected_value1=""
         conversation=""
@@ -385,7 +396,8 @@ def send_click(prompt_input :str):
           time.sleep(2)
           bar.empty()
       else:
-           with st.spinner("Fetching response...:coffee:"):
+         # with loading_placeholder:
+           with st.spinner("Fetching response..."):
               with output_container:
                     if st.session_state.conversations:
                         st.session_state.conversations.append({"role": "user", "content": prompt_input})
@@ -432,11 +444,12 @@ def send_click(prompt_input :str):
                                 )
 
             # build_footer()
+
 init_pinecone()
 
 def main():
         with streamlit_analytics.track():
-           with input_container:
+            with input_container:
                 st.session_state.clear = c.button(":negative_squared_cross_mark: Clear Conversation")
                 if st.session_state.clear:
                     reset_context()
@@ -452,8 +465,12 @@ def main():
                     st.session_state.bool_search = st.session_state.get("bool_search", False)
                     bool_search = st.checkbox('Include Enterprise Knowledge Base', key='bool_search',
                                          value=st.session_state.bool_search)
-                st.session_state.redact = False
-              # st.checkbox('Redact Confidential Information')
+                if st.session_state.get("redact"):
+                    st.checkbox('Redact Confidential Information', key="redact", value=st.session_state.redact)
+                else:
+                    st.session_state.redact = st.session_state.get("redact", False)
+                    st.checkbox('Redact Confidential Information', key="redact", value=st.session_state.redact)
+
               #   col1, col2 = c.columns(2)
                 # with col1:
                 submitted = st.button("✅ Send Message")
@@ -464,4 +481,4 @@ def main():
 
 
 if __name__ == "__main__":
-   main()
+        main()
