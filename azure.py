@@ -22,6 +22,8 @@ import time
 
 pd.set_option("max_colwidth", 300)
 nlp = spacy.load("en_core_web_sm")
+
+
 ruler = nlp.add_pipe("entity_ruler")
 patterns = [{"label": "ORG", "pattern": "Eightfold"}, {"label": "ORG", "pattern": "Successfactors"},
             {"label": "ORG", "pattern": "SAP"},
@@ -44,7 +46,7 @@ sap_options1 = ["", "Tell me the features of mobile time recording for iOS and A
                 "What is Beamery and how does it integrate with SAP?",
                 "What is the learning plan to be become a Successfactors LMS consultant? What skills do I need?",
                 "What are the different types of partnerships that SAP offers? What is a solution extension partner?",
-                "How do I change the theme in the Successfactors application? Provide steps for an adminstrator",
+                "How do I change the theme in the Successfactors application? Provide steps for an administrator",
                 "You are an HR industry expert. Provide the top HR challenges facing the retail industry",
                 "Provide 10 limbic openings for a presentation about talent management, learning and payroll.",
                 "Provide in a table format an Employee table with the following columns and 10 randomized entries \n [EmployeeId, Employee Name, Job Classification, Cost Center, Region, Job Location, Department, Average Tenure, Total YOE, Pay Grade, Total CTC, Compa- ratio. Impact-of-leaving, Cost-to-train/year, Performance Rating, Future Leader]"]
@@ -75,8 +77,7 @@ next_action = ["","Summarize this response highlighting the key takeaways.", "Ex
 count_str = ""
 result_str = ""
 response = ""
-st.set_page_config(page_title="Chat GPT| Open AI| SAP Generative AI| Sid Bhattacharya", page_icon=':rocket:',
-                   layout='wide')
+st.set_page_config(page_title="Chat GPT| Open AI| SAP Generative AI| Sid Bhattacharya", page_icon=':rocket:')
 c = st.container()
 header = c.container()
 # loading_placeholder = c.container()
