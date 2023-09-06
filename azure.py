@@ -30,7 +30,8 @@ patterns = [{"label": "ORG", "pattern": "Eightfold"}, {"label": "ORG", "pattern"
             {"label": "GPE", "pattern": [{"LOWER": "san"}, {"LOWER": "francisco"}]}]
 ruler.add_patterns(patterns)
 
-sap_options1 = ["", "Tell me the features of mobile time recording for iOS and Android",
+sap_options1 = ["", "----✍️ SAP Enterprise Prompts ✍️----",
+                "Tell me the features of mobile time recording for iOS and Android",
                 "Provide the key highlights from Time Management 1H 2023 Release Notes",
                 "What are the new features of the Weekly Time Sheet",
                 "What are the features available for grace rule rounding and rest-rules",
@@ -40,16 +41,26 @@ sap_options1 = ["", "Tell me the features of mobile time recording for iOS and A
                 "How does the SAP SuccessFactors Opportunity Marketplace help employees",
                 "How can I get ready for Talent Intelligence Hub?",
                 "How does Talent Intelligence Hub interact with other SAP SuccessFactors modules?",
+                "----✴️ Customers & Partners Prompts ✴️----",
+                "What is the learning plan to be become a Successfactors LMS consultant? What skills dot I need?",
+                "What are the different types of partnerships that SAP offers? What is a solution extension partner?",
+                "How do I change the theme in the Successfactors application? Provide steps for an administrator",
                 "What is the SAP SuccessFactors Innovation Strategy?",
                 "What are some examples of SAP Solution Extensions",
                 "What is Eightfold and how does it integrate with SAP?",
                 "What is Beamery and how does it integrate with SAP?",
-                "What is the learning plan to be become a Successfactors LMS consultant? What skills do I need?",
-                "What are the different types of partnerships that SAP offers? What is a solution extension partner?",
-                "How do I change the theme in the Successfactors application? Provide steps for an administrator",
+                "----🧠 Sales & Marketing Prompts 🧠----",
                 "You are an HR industry expert. Provide the top HR challenges facing the retail industry",
+                "Provide a audio script track for the SuccessFactors recruiting solution for a fashion retail business. Include a headline, intro, description and outro",
                 "Provide 10 limbic openings for a presentation about talent management, learning and payroll.",
-                "Provide in a table format an Employee table with the following columns and 10 randomized entries \n [EmployeeId, Employee Name, Job Classification, Cost Center, Region, Job Location, Department, Average Tenure, Total YOE, Pay Grade, Total CTC, Compa- ratio. Impact-of-leaving, Cost-to-train/year, Performance Rating, Future Leader]"]
+                "Write an email talking about the perennial HR challenges around hiring, motiving and guiding employees in English and German",
+                "Write a twitter thread on the benefits of blockchain based verified employee credentials",
+                "Write a 300-word SEO-friendly blog with right keywords, title, meta-description, h1,h2 details and  5 examples on how the gig economy will change the retail industry.",
+                "----☝️ Code Generation Prompts ☝️----",
+                "Provide in a table format an Employee table with the following columns and 10 randomized entries \n [EmployeeId, Employee Name, Job Classification, Cost Center, Region, Job Location, Department, Average Tenure, Total YOE, Pay Grade, Total CTC, Compa- ratio. Impact-of-leaving, Cost-to-train/year, Performance Rating, Future Leader]",
+                "Write me python and abap code to make a REST API call and authenticate via Microsoft Active Directory",
+                "Write me a VBA macro to create a presentation for a startup."]
+
 sap_options2 = ["", "You are an HR industry expert. Provide the top HR challenges facing the retail industry",
                 "Write a 300-word SEO-friendly blog with right keywords, title, meta-description, h1,h2 details and  5 examples on how the gig economy will change the retail industry.",
                 "Write an outline for an ebook with 10 chapters on how the future of hybrid work can be improved by Web3 and Metaverse. Provide detailed titles and sites as references.",
@@ -165,6 +176,14 @@ user_input = ''
 search_results = ''
 download_content = ''
 index_name = 'demo-index'
+
+hide_streamlit_style = """
+            <style>
+
+            footer {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 @st.cache_resource
 def init_model():
@@ -356,9 +375,9 @@ def build_footer():
     c1, c2, c3 = c.columns(3)
     with c:
         with c1:
-            st.info('**Contact Me: [@sidbhat5](https://twitter.com/sidbhat5)**', icon="💡")
+            st.info('**Contact: [@sidbhat5](https://twitter.com/sidbhat5)**', icon="💡")
         with c2:
-            st.info('**Prompts Guide: [Prompts](https://sidbhat.blog/10-chat-gpt-prompts-to-help-you-succeed/)**',
+            st.info('**Guide: [Prompts](https://sidbhat.blog/10-chat-gpt-prompts-to-help-you-succeed/)**',
                     icon="💻")
         with c3:
             st.info('**Google Collab: [Code](https://colab.research.google.com/drive/)**', icon="🧠")
@@ -427,13 +446,16 @@ def send_click(prompt_input :str):
                         st.session_state.conversations.append({"role": "assistant", "content": st.session_state.enterprise_search})
                         download_content = st.session_state.enterprise_search
                     else:
+                        # st.session_state.response = ( OpenAIService.open_ai_query(query=prompt_input, model='anthropic-claude-v2',gpt_conversation_history=st.session_state.conversations))
                         st.session_state.response = OpenAIService.open_ai_query(query='', model='gpt-4',
                                                                                 gpt_conversation_history=st.session_state.conversations)
+
                         st.session_state.conversations.append({"role": "assistant", "content": st.session_state.response})
                         download_content = st.session_state.response
                         #print(conversation)
                         c.caption(":robot_face: Response from Open AI")
                         c.info(redact_string(st.session_state.response))
+
 
                     if download_content != '':
                         c.download_button(
@@ -444,7 +466,7 @@ def send_click(prompt_input :str):
                                     mime="docx"
                                 )
 
-            # build_footer()
+           # build_footer()
 
 init_pinecone()
 
@@ -472,6 +494,7 @@ def main():
                     st.session_state.redact = st.session_state.get("redact", False)
                     st.checkbox('Redact Confidential Information', key="redact", value=st.session_state.redact)
 
+                st.checkbox('Real time search', key="google_search")
               #   col1, col2 = c.columns(2)
                 # with col1:
                 submitted = st.button("✅ Send Message")

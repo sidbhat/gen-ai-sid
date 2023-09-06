@@ -51,9 +51,9 @@ class OpenAIService:
                 result = response.json()
                 return result["text"][0]
             else:
-                result = response.json()["choices"]
-                for choice in result:
-                    return choice["text"]
+                print(response.json())
+                return response.json()["completion"]
+
 
         except Exception as e:
             logging.exception(e)
@@ -104,6 +104,16 @@ class OpenAIService:
                 "presence_penalty": 0,
                 "top_p": 0.95,
                 "stop": "null"
+            }
+        elif model == "anthropic-claude-v2":
+            return {
+                    "deployment_id": model,
+                    "prompt": " ".join(str(e) for e in gpt_conversation_history),
+                    "max_tokens_to_sample": 1024,
+                    "temperature": 0.8,
+                    "top_k": 250,
+                    "top_p": 1,
+                    "stop_sequences": ["Human:"]
             }
         elif model == "bloom":
             return {
@@ -189,7 +199,7 @@ class OpenAIService:
                 logging.info("Status code = %s: %s", response.status_code, response.text)
                 return []
 
-            print(response.json())
+            # print(response.json())
             return response.json()["data"][0]["embedding"]
 
         except Exception as e:

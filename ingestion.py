@@ -62,5 +62,5 @@ def load_knowledge_base(str_: str):
     print(response)
     print("done")
 
-uploaded_file = '/Users/I806232/Documents/gen-ai/data/SAP SuccessFactors Time Management Feature List vH1_2023.pdf'
+uploaded_file = '/Users/I806232/Documents/gen-ai/data/AI Tools.pdf'
 load_knowledge_base(uploaded_file)
