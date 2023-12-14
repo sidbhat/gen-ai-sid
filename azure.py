@@ -30,7 +30,7 @@ patterns = [{"label": "ORG", "pattern": "Eightfold"}, {"label": "ORG", "pattern"
             {"label": "GPE", "pattern": [{"LOWER": "san"}, {"LOWER": "francisco"}]}]
 ruler.add_patterns(patterns)
 
-sap_options1 = ["", "----✍️ SAP Enterprise Prompts ✍️----",
+sap_options1 = ["",
                 "Tell me the features of mobile time recording for iOS and Android",
                 "Provide the key highlights from Time Management 1H 2023 Release Notes",
                 "What are the new features of the Weekly Time Sheet",
@@ -41,25 +41,45 @@ sap_options1 = ["", "----✍️ SAP Enterprise Prompts ✍️----",
                 "How does the SAP SuccessFactors Opportunity Marketplace help employees",
                 "How can I get ready for Talent Intelligence Hub?",
                 "How does Talent Intelligence Hub interact with other SAP SuccessFactors modules?",
-                "----✴️ Customers & Partners Prompts ✴️----",
-                "What is the learning plan to be become a Successfactors LMS consultant? What skills dot I need?",
-                "What are the different types of partnerships that SAP offers? What is a solution extension partner?",
-                "How do I change the theme in the Successfactors application? Provide steps for an administrator",
+
+
+                "Why was Time Tracking delivered as a separate SKU from Employee Central?",
+                "What does this mean for the Solution Extensions with Workforce Software and Kronos?",
+                "How do we position our solution offerings in the Time Management space?",
+                "What types of investment is SAP making for Time Management?",
+                "Will we offer clock terminal integration?",
+
+                "What are the new features in SAP SuccessFactors Time Tracking?",
+                "What are the new features for night shift workers?",
+                "What are the new public holiday handling features?",
+                "What are the new late comer and early leaver features?",
+                "What is the new grace rule rounding feature?",
+                "What are the new rest rules features?",
+                "What are the new allowance recording features?",
+                "What are the new clock in/out features?",
+                "What are the new clock in/out self-service features?",
+                "What are the new admin alert features?",
+                "What are the new usage reporting features?",
+                "What are the new Time Administrator features?",
+                "What are the new Time Admin alert features?",
+                "What is the new time account review UI feature?",
+
+                "What are the new time data recalculation features?",
+                "What are the new reporting features?",
+                "What are the new dashboard features?",
+                "What are the new administrative tool features?",
+                "What are the new data protection features?",
+                "What are the new workflow features?",
+                "What are other new miscellaneous features?",
+                "What are the new integration features?",
+                "What are the new API features?",
+
                 "What is the SAP SuccessFactors Innovation Strategy?",
                 "What are some examples of SAP Solution Extensions",
                 "What is Eightfold and how does it integrate with SAP?",
                 "What is Beamery and how does it integrate with SAP?",
-                "----🧠 Sales & Marketing Prompts 🧠----",
-                "You are an HR industry expert. Provide the top HR challenges facing the retail industry",
-                "Provide a audio script track for the SuccessFactors recruiting solution for a fashion retail business. Include a headline, intro, description and outro",
-                "Provide 10 limbic openings for a presentation about talent management, learning and payroll.",
-                "Write an email talking about the perennial HR challenges around hiring, motiving and guiding employees in English and German",
-                "Write a twitter thread on the benefits of blockchain based verified employee credentials",
-                "Write a 300-word SEO-friendly blog with right keywords, title, meta-description, h1,h2 details and  5 examples on how the gig economy will change the retail industry.",
-                "----☝️ Code Generation Prompts ☝️----",
-                "Provide in a table format an Employee table with the following columns and 10 randomized entries \n [EmployeeId, Employee Name, Job Classification, Cost Center, Region, Job Location, Department, Average Tenure, Total YOE, Pay Grade, Total CTC, Compa- ratio. Impact-of-leaving, Cost-to-train/year, Performance Rating, Future Leader]",
-                "Write me python and abap code to make a REST API call and authenticate via Microsoft Active Directory",
-                "Write me a VBA macro to create a presentation for a startup."]
+                "Write me a VBA macro to create a presentation for a startup."
+                ]
 
 sap_options2 = ["", "You are an HR industry expert. Provide the top HR challenges facing the retail industry",
                 "Write a 300-word SEO-friendly blog with right keywords, title, meta-description, h1,h2 details and  5 examples on how the gig economy will change the retail industry.",
@@ -305,7 +325,7 @@ def enterprise_search(prompt_input: str):
     # connect to index
     docsearch = Pinecone.from_existing_index(index_name, embeddings)
 
-    query = "You are a helpful assistant that provides detailed answers based on facts based on the given context. Provide your response in the format {question} {answer} followed by {references}. Always cite references for your responses towards the end of the response." + st.session_state.prompt
+    query = "You are a helpful assistant that provides detailed answers based on facts based on the given context. Always cite references for your responses towards the end of the response." + st.session_state.prompt
     chain = load_qa_chain(llm, chain_type="stuff")
     docs = docsearch.similarity_search(prompt_input)
     # print(docs)
@@ -488,13 +508,13 @@ def main():
                     st.session_state.bool_search = st.session_state.get("bool_search", False)
                     bool_search = st.checkbox('Include Enterprise Knowledge Base', key='bool_search',
                                          value=st.session_state.bool_search)
-                if st.session_state.get("redact"):
-                    st.checkbox('Redact Confidential Information', key="redact", value=st.session_state.redact)
-                else:
-                    st.session_state.redact = st.session_state.get("redact", False)
-                    st.checkbox('Redact Confidential Information', key="redact", value=st.session_state.redact)
+                # if st.session_state.get("redact"):
+                #     st.checkbox('Redact Confidential Information', key="redact", value=st.session_state.redact)
+                # else:
+                st.session_state.redact = st.session_state.get("redact", False)
+                    # st.checkbox('Redact Confidential Information', key="redact", value=st.session_state.redact)
 
-                st.checkbox('Real time search', key="google_search")
+                # st.checkbox('Real time search', key="google_search")
               #   col1, col2 = c.columns(2)
                 # with col1:
                 submitted = st.button("✅ Send Message")

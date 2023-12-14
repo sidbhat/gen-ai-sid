@@ -10,7 +10,7 @@ from langchain.vectorstores import Pinecone
 from langchain.embeddings.openai import OpenAIEmbeddings
 
 from config import Config
-
+sys_instructions = "You are a helpful, respectful and honest assistant. Always answer as helpfully as possible, while being safe.  Your answers should not include any harmful, unethical, racist, sexist, toxic, dangerous, or illegal content. Please ensure that your responses are socially unbiased and positive in nature.\n\nIf a question does not make any sense, or is not factually coherent, explain why instead of answering something not correct. If you don'\''t know the answer to a question, please don'\''t share false information.\n"
 
 class OpenAIService:
 
@@ -22,6 +22,7 @@ class OpenAIService:
                                  params={"grant_type": "client_credentials"})
 
             token = resp.json()["access_token"]
+            print(token)
             return token
 
         except Exception as e:
@@ -38,11 +39,11 @@ class OpenAIService:
             payload = OpenAIService._generate_payload_for_model(query, model, gpt_conversation_history)
 
             response = requests.request("POST", url, headers=headers, json=payload, timeout=Config.OPEN_AI_TIMEOUT)
-            # print(response.json())
+            print(response.json())
 
             if response.status_code != HTTPStatus.OK:
                 logging.info("Status code = %s: %s", response.status_code, response.text)
-                return "Error retrieving results"
+                return f"Status code = {response.status_code}, {response.text}"
 
             if model == "gpt-35-turbo" or model == "gpt-4" or model == "gpt-4-32k":
                 result = response.json()["choices"]
@@ -50,9 +51,15 @@ class OpenAIService:
             elif model == "bloom-7b1" or model == "gptj-full":
                 result = response.json()
                 return result["text"][0]
-            else:
+            elif model == "anthropic-claude-v2":
                 print(response.json())
                 return response.json()["completion"]
+            elif model == "alephalpha":
+                return response.json()["completions"][0]["completion"]
+            elif model == "llama2-70b-chat-hf":
+                return response.json()["generated_text"]
+            else:
+                return response.json()
 
 
         except Exception as e:
@@ -94,7 +101,7 @@ class OpenAIService:
         #         "n": 1,
         #         "stop": ["<|im_end|>"]
         #     }
-        elif model == "gpt-35-turbo" or model == "gpt-4" or model == "gpt-4-32k":
+        elif model == "gpt-35-turbo" or model == "gpt-4":
             return {
                 "deployment_id": model,
                 "messages": gpt_conversation_history,
@@ -155,6 +162,55 @@ class OpenAIService:
                 "do_sample": True,
                 "remove_input_from_output": True
             }
+        elif model == "llama2-70b-chat-hf":
+            return {
+                "deployment_id": model,
+                "inputs": f"[INST] <<SYS>>\n\n{sys_instructions}<</SYS>>\n\n{query}n[/INST] ",
+                "parameters": {
+                    "best_of": 2,
+                    "do_sample": True,
+                    "max_new_tokens": 10240,
+                    "repetition_penalty": 10.0,
+                    "stop": [],
+                    "temperature": 0.1,
+                    "top_k": 10,
+                    "top_p": 0.95
+                }
+            }
+        elif model == "gpt-4-32k":
+            return {
+                    "deployment_id": model,
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": "Find beachfront hotels in San Diego for less than $300 a month with free breakfast."
+                        }
+                    ],
+                    "functions": [
+                        {
+                            "name": "search_hotels",
+                            "description": "Retrieves hotels from the search index based on the parameters provided",
+                            "parameters": {
+                                "type": "object",
+                                "properties": {
+                                    "location": {
+                                        "type": "string",
+                                        "description": "The location of the hotel (i.e. Seattle, WA)"
+                                    },
+                                    "max_price": {
+                                        "type": "number",
+                                        "description": "The maximum price for the hotel"
+                                    },
+                                    "features": {
+                                        "type": "string",
+                                        "description": "A comma separated list of features (i.e. beachfront, free wifi, etc.)"
+                                    }
+                                },
+                                "required": ["location"],
+                            },
+                        }
+                    ]
+                }
 
         raise Exception(f"Invalid model {model}")
 
@@ -183,6 +239,7 @@ class OpenAIService:
             logging.exception(e)
             return "Error retrieving results"
 
+#/openai/deployments/text-embedding-ada-002-v2/embeddings?api-version=2022-12-01
     @staticmethod
     def open_ai_get_embeddings(query: str) -> list:
         try:
@@ -199,7 +256,7 @@ class OpenAIService:
                 logging.info("Status code = %s: %s", response.status_code, response.text)
                 return []
 
-            # print(response.json())
+            print(response.json())
             return response.json()["data"][0]["embedding"]
 
         except Exception as e:

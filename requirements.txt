@@ -24,7 +24,7 @@ waitress==2.1.2
 Werkzeug==2.2.3
 WTForms==3.0.1
 zipp==3.15.0
-langchain~=0.0.142
+langchain~=0.0.146
 openai~=0.27.5
 faiss-cpu
 streamlit~=1.22.0
@@ -47,3 +47,4 @@ beautifulsoup4~=4.12.2
 pypdf2~=3.0.1
 googlesearch-python
 tiktoken
+hugchat==0.0.8

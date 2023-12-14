@@ -47,7 +47,7 @@ def load_knowledge_base(str_: str):
     embeddings = OpenAIEmbeddings(openai_api_key=os.environ['OPENAI_API_KEY'])
     Pinecone.from_texts([t.page_content for t in texts], embeddings, index_name=index_name)
 
-    llm = ChatOpenAI(temperature=0, openai_api_key=os.environ['OPENAI_API_KEY'], model_name="gpt-3.5-turbo", model_kwargs={'max_tokens':500})
+    llm = ChatOpenAI(temperature=0, openai_api_key=os.environ['OPENAI_API_KEY'], model_name="gpt-3.5-turbo")
     chain = load_qa_chain(llm, chain_type="stuff")
 
     query = "Summarize the document " + str_
@@ -62,5 +62,5 @@ def load_knowledge_base(str_: str):
     print(response)
     print("done")
 
-uploaded_file = '/Users/I806232/Documents/gen-ai/data/AI Tools.pdf'
+uploaded_file = './data/L2 Detail - Positioning Time and Workforce Management solutions.pdf'
 load_knowledge_base(uploaded_file)
