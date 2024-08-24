@@ -1,280 +1,4 @@
-<html><head><base href="https://sidbhat.blog/"><title>Samur{AI}: Wisdom</title><script src="https://unpkg.com/htmx.org@1.9.2"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script><style>@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap');
-
-:root {
-    --primary-color: #8d2b2b;
-    --secondary-color: #d4a960;
-    --text-color: #333;
-    --background-color: #f0e6d2;
-    --card-background: rgba(255, 255, 255, 0.9);
-}
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    font-family: 'Noto Serif JP', serif;
-    background: linear-gradient(rgba(240,230,210,0.8), rgba(210,180,140,0.8));
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    color: var(--text-color);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    min-height: 100vh;
-    font-size: 16px;
-    line-height: 1.5;
-}
-
-#header-container {
-    width: 100%;
-    background-color: var(--primary-color);
-    padding: 10px 0;
-}
-
-#header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-h1 {
-    font-size: 2em;
-    color: #fff;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-    letter-spacing: 2px;
-}
-
-#game-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 1200px;
-    padding: 20px;
-}
-
-#card-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-    margin-bottom: 20px;
-}
-
-.card {
-    width: 300px;
-    background-color: var(--card-background);
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-    padding: 15px;
-    transition: all 0.3s ease;
-    border: 1px solid var(--secondary-color);
-    cursor: pointer;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-}
-
-.card img {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-    border: 1px solid var(--secondary-color);
-    border-radius: 5px;
-}
-
-.card-content {
-    padding: 10px 0;
-}
-
-.card-title {
-    font-size: 1.2em;
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: var(--primary-color);
-}
-
-.card-description, .card-benefits {
-    font-size: 0.9em;
-    margin-bottom: 5px;
-}
-
-.card-points {
-    font-weight: bold;
-    color: var(--primary-color);
-}
-
-button {
-    background: var(--primary-color);
-    border: none;
-    color: white;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 1em;
-    font-family: 'Noto Serif JP', serif;
-    margin: 4px 2px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: all 0.3s ease;
-}
-
-button:hover {
-    background: #a33636;
-    transform: translateY(-2px);
-}
-
-#score-container {
-    font-size: 1.2em;
-    margin-bottom: 20px;
-    text-align: center;
-    background-color: rgba(255,255,255,0.8);
-    padding: 10px;
-    border-radius: 5px;
-}
-
-#quiz-container {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.1);
-    max-width: 90%;
-    width: 400px;
-    z-index: 1000;
-}
-
-#quiz-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    z-index: 999;
-}
-
-#quiz-question {
-    font-size: 1.1em;
-    margin-bottom: 15px;
-}
-
-#quiz-options {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-#quiz-options button {
-    width: 100%;
-    text-align: left;
-    padding: 10px;
-}
-
-#quiz-result {
-    margin-top: 15px;
-    font-weight: bold;
-}
-
-.icon {
-    font-size: 1.2em;
-    margin-right: 10px;
-    color: #fff;
-}
-
-#help-icon, #share-icon {
-    font-size: 1.2em;
-    color: #fff;
-    cursor: pointer;
-}
-
-#help-modal {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.1);
-    max-width: 90%;
-    width: 400px;
-    z-index: 1001;
-}
-
-#help-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    z-index: 1000;
-}
-
-#close-quiz {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 1.2em;
-    cursor: pointer;
-    color: var(--primary-color);
-}
-
-@media (max-width: 768px) {
-    #header-content {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    h1 {
-        font-size: 1.5em;
-        margin: 10px 0;
-    }
-
-    #help-icon, #share-icon {
-        margin: 10px 0;
-    }
-
-    .card {
-        width: 100%;
-        max-width: 300px;
-    }
-
-    #quiz-container {
-        width: 95%;
-        padding: 15px;
-    }
-
-    #quiz-question {
-        font-size: 1em;
-    }
-
-    #quiz-options button {
-        padding: 8px;
-    }
-}
-</style></head><body><div id="header-container"><div id="header-content"><div id="help-icon"><i class="fas fa-question-circle"></i></div><h1><i class="fas fa-torii-gate icon"></i> Samur{AI}: Wisdom</h1><div id="share-icon"><i class="fas fa-share-alt"></i></div></div></div><div id="game-container"><div id="score-container">Score: <span id="score">0</span></div><div id="card-container"></div><button id="draw-card"><i class="fas fa-hand-paper icon"></i> Draw New Card</button></div><div id="quiz-overlay"></div><div id="quiz-container"><span id="close-quiz">&times;</span><h2><i class="fas fa-robot icon"></i> Samur{AI} Quiz</h2><div id="quiz-question"></div><div id="quiz-options"></div><div id="quiz-result"></div></div><div id="help-overlay"></div><div id="help-modal"><h2>How to Play Samur{AI}</h2><p>1. Click "Draw New Card" to reveal an AI concept or technology.</p><p>2. One card will be drawn at a time.</p><p>3. Click on the card to take the Samur{AI} Quiz and earn points!</p><p>4. Explore different AI technologies and test your knowledge.</p><p>5. Click the share icon to post your score on social media!</p><button id="close-help">Close</button></div><script>let score = 0;
+<html><head><base href="https://sidbhat.blog"><title>Samur{ai} Wisdom</title><script src="https://unpkg.com/htmx.org@1.9.2"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script><style>@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap');body{font-family:'Noto Serif JP',serif;background:linear-gradient(rgba(240,230,210,0.8),rgba(210,180,140,0.8)),url('https://pollinations.ai/p/A%20serene%20Japanese%20village%20with%20traditional%20houses%20and%20cherry%20blossom%20trees%20in%20full%20bloom.%20Soft%20pink%20petals%20floating%20in%20the%20air.%20Distant%20mountains%20in%20the%20background.%20Painted%20in%20a%20delicate%20watercolor%20style%20with%20muted%20colors.?nologo=true');background-size:cover;background-position:center;background-attachment:fixed;color:#333;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:100vh;margin:0;padding:20px;box-sizing:border-box}h1{text-align:center;font-size:2.5em;color:#8d2b2b;text-shadow:2px 2px 4px rgba(0,0,0,0.1);font-family:'Noto Serif JP',serif;letter-spacing:2px;margin:20px 0}#game-container{display:flex;flex-direction:column;align-items:center;width:100%;max-width:600px;padding:20px}#card-container{display:flex;justify-content:center;width:100%;margin-bottom:40px}.card{width:100%;max-width:400px;height:auto;background-color:rgba(255,255,255,0.9);border-radius:10px;box-shadow:0 0 15px rgba(0,0,0,0.1);display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:15px;box-sizing:border-box;transition:all 0.5s ease;position:relative;overflow:hidden;transform-style:preserve-3d;border:1px solid #d4a960;cursor:pointer}.card:hover{transform:translateY(-10px) rotateY(10deg);box-shadow:10px 10px 20px rgba(0,0,0,0.2)}.card::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(45deg,transparent,rgba(255,255,255,0.1),transparent);pointer-events:none}.card img{width:100%;height:auto;object-fit:cover;border:1px solid #d4a960;transition:all 0.5s ease;border-radius:5px}.card:hover img{transform:scale(1.05)}.card-content{padding:10px;text-align:center}.card-title{font-size:18px;font-weight:bold;margin-bottom:10px;color:#8d2b2b}.card-description,.card-benefits{font-size:14px;margin-bottom:5px}.card-points{font-weight:bold;color:#8d2b2b}button{background:#8d2b2b;border:none;color:white;padding:12px 24px;text-align:center;text-decoration:none;display:inline-block;font-size:18px;font-family:'Noto Serif JP',serif;margin:4px 2px;cursor:pointer;border-radius:5px;transition:all 0.3s ease;box-shadow:3px 3px 0 #d4a960}button:hover{background:#a33636;transform:translateY(-3px);box-shadow:5px 5px 0 #d4a960}@keyframes slideIn{from{opacity:0;transform:translateY(50px)}to{opacity:1;transform:translateY(0)}}.card{animation:slideIn 0.6s ease-out}@keyframes float{0%{transform:translateY(0px)}50%{transform:translateY(-10px)}100%{transform:translateY(0px)}}.card{animation:float 4s ease-in-out infinite}#score-container{font-size:24px;margin-bottom:20px;text-align:center;background-color:rgba(255,255,255,0.8);padding:10px;border-radius:5px}#quiz-container{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:20px;border-radius:10px;box-shadow:0 0 15px rgba(0,0,0,0.1);max-width:90%;width:400px;z-index:1000}#quiz-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:999}#quiz-question{font-size:18px;margin-bottom:15px}#quiz-options{display:flex;flex-direction:column;gap:10px}#quiz-options button{width:100%;text-align:left;padding:10px}#quiz-options button.correct{background-color:#4CAF50;color:white}#quiz-options button.incorrect{background-color:#F44336;color:white}#quiz-result{margin-top:15px;font-weight:bold}.icon{font-size:24px;margin-right:10px;color:#8d2b2b}#share-options{display:none;position:absolute;background:white;border:1px solid #d4a960;border-radius:5px;padding:10px;z-index:100}#share-options button{display:block;width:100%;margin-bottom:5px;text-align:left}#help-icon,#share-icon{font-size:24px;color:#8d2b2b;cursor:pointer;z-index:1000;position:fixed;top:20px}#help-icon{left:20px}#share-icon{right:20px}#help-modal{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:20px;border-radius:10px;box-shadow:0 0 15px rgba(0,0,0,0.1);max-width:90%;width:400px;z-index:1001}#help-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000}#close-quiz{position:absolute;top:10px;right:10px;font-size:20px;cursor:pointer;color:#8d2b2b}#draw-card .icon{color:#ffd700}@media (max-width:600px){h1{font-size:2em}#game-container{padding:10px}.card{max-width:100%}#quiz-container,#help-modal{width:90%}}</style></head><body><div id="help-icon"><i class="fas fa-question-circle"></i></div><div id="share-icon"><i class="fas fa-share-alt"></i></div><h1><i class="fas fa-torii-gate icon"></i> Samur{ai} Wisdom</h1><div id="game-container"><div id="score-container">Score: <span id="score">0</span></div><div id="card-container"></div><button id="draw-card"><i class="fas fa-hand-paper icon"></i> Draw New Card</button></div><div id="quiz-overlay"></div><div id="quiz-container"><span id="close-quiz">&times;</span><h2><i class="fas fa-robot icon"></i> Samur{ai} Wisdom Quiz</h2><div id="quiz-question"></div><div id="quiz-options"></div><div id="quiz-result"></div></div><div id="help-overlay"></div><div id="help-modal"><h2>How to Play</h2><p>1. Click "Draw New Card" to reveal AI concepts and technologies.</p><p>2. One card will be drawn at a time.</p><p>3. Click on the card to take the Samur{ai} Wisdom Quiz and earn points!</p><p>4. Explore different AI technologies and test your knowledge.</p><p>5. Use the share icon to post your score on social media!</p><button id="close-help">Close</button></div><script>let score = 0;
 const cardContainer = document.getElementById('card-container');
 const scoreElement = document.getElementById('score');
 const quizContainer = document.getElementById('quiz-container');
@@ -327,261 +51,306 @@ const aiConcepts = [
         }
     },
     {
-        title: "NLP - Natural Language Processing",
-        description: "AI technology focused on the interaction between computers and human language.",
-        benefits: "Enables machines to understand, interpret, and generate human language.",
+        title: "RAGE - Advanced RAG Implementation",
+        description: "An advanced or specialized implementation of Retrieval Augmented Generation.",
+        benefits: "Potentially offers improved performance or specialized capabilities in information retrieval and generation.",
         points: 100,
         quiz: {
-            question: "Which of the following is NOT a common application of NLP?",
-            options: ["Sentiment analysis", "Machine translation", "Image classification", "Chatbots"],
+            question: "What might RAGE aim to improve over standard RAG?",
+            options: ["Retrieval speed", "Generation quality", "Both retrieval and generation aspects", "Only data storage"],
+            answer: 2
+        }
+    },
+    {
+        title: "NLP - Natural Language Processing",
+        description: "AI technology that enables machines to understand, interpret, and generate human language.",
+        benefits: "Facilitates human-computer interaction and automates language-related tasks.",
+        points: 100,
+        quiz: {
+            question: "Which of these is NOT a typical NLP task?",
+            options: ["Sentiment analysis", "Machine translation", "Image classification", "Text summarization"],
             answer: 2
         }
     },
     {
         title: "GPT - Generative Pre-trained Transformer",
-        description: "A type of language model that uses transformer architecture and is pre-trained on large datasets.",
-        benefits: "Capable of generating human-like text and performing various language tasks.",
+        description: "A type of neural network architecture designed for natural language processing tasks.",
+        benefits: "Enables advanced language understanding and generation capabilities in AI systems.",
         points: 100,
         quiz: {
             question: "What is a key feature of GPT models?",
-            options: ["They require small datasets", "They use transformer architecture", "They are specifically designed for image processing", "They can only perform classification tasks"],
+            options: ["They only work with images", "They use transformer architecture", "They require small datasets", "They can't generate text"],
             answer: 1
         }
     },
     {
-        title: "Transfer Learning",
-        description: "A machine learning method where a model developed for one task is reused as the starting point for a model on a second task.",
-        benefits: "Reduces training time and improves performance on new tasks with limited data.",
+        title: "DSPy - Dynamic Systems Programming",
+        description: "A framework or tool for dynamic programming or AI model optimization.",
+        benefits: "Potentially improves efficiency and performance in AI system development and deployment.",
         points: 100,
         quiz: {
-            question: "What is the primary benefit of transfer learning?",
-            options: ["It requires no pre-training", "It works only for specific domains", "It reduces the need for large datasets in new tasks", "It eliminates the need for model architecture"],
-            answer: 2
-        }
-    },
-    {
-        title: "Federated Learning",
-        description: "A machine learning technique that trains algorithms on decentralized data residing on devices like mobile phones.",
-        benefits: "Enables model training while keeping data locally, enhancing privacy and data security.",
-        points: 100,
-        quiz: {
-            question: "What is a key advantage of federated learning?",
-            options: ["Centralized data storage", "Enhanced data privacy", "Increased data transfer", "Reduced model accuracy"],
+            question: "What might be a primary use of DSPy in AI development?",
+            options: ["Creating user interfaces", "Optimizing model performance", "Managing databases", "Designing hardware"],
             answer: 1
         }
     },
     {
-        title: "Reinforcement Learning",
-        description: "A type of machine learning where an agent learns to make decisions by taking actions in an environment to maximize a reward.",
-        benefits: "Effective for solving complex, sequential decision-making problems.",
+        title: "LoRA - Low-Rank Adaptation",
+        description: "A technique for efficient fine-tuning of large language models.",
+        benefits: "Reduces computational resources needed for model adaptation while maintaining performance.",
         points: 100,
         quiz: {
-            question: "What is the core concept in reinforcement learning?",
-            options: ["Supervised training", "Learning from labeled data", "Trial and error with rewards", "Unsupervised clustering"],
-            answer: 2
-        }
-    },
-    {
-        title: "GANs - Generative Adversarial Networks",
-        description: "A class of machine learning frameworks where two neural networks contest with each other in a game.",
-        benefits: "Capable of generating new, synthetic instances of data that can pass for real data.",
-        points: 100,
-        quiz: {
-            question: "What is the primary use of GANs?",
-            options: ["Data classification", "Image recognition", "Generating synthetic data", "Natural language processing"],
-            answer: 2
-        }
-    },
-    {
-        title: "Computer Vision",
-        description: "A field of AI that trains computers to interpret and understand the visual world.",
-        benefits: "Enables machines to accurately identify and classify objects in images and videos.",
-        points: 100,
-        quiz: {
-            question: "Which of the following is NOT a common application of computer vision?",
-            options: ["Facial recognition", "Autonomous vehicles", "Text translation", "Medical image analysis"],
-            answer: 2
-        }
-    },
-    {
-        title: "Neural Architecture Search (NAS)",
-        description: "An technique to automate the design of artificial neural networks.",
-        benefits: "Discovers optimal neural network architectures, potentially outperforming human-designed models.",
-        points: 100,
-        quiz: {
-            question: "What is the main purpose of Neural Architecture Search?",
-            options: ["To train models faster", "To automate the design of neural networks", "To increase data storage", "To improve hardware efficiency"],
+            question: "What is the main advantage of using LoRA?",
+            options: ["Increases model size", "Efficient fine-tuning", "Improves data collection", "Enhances user interface"],
             answer: 1
         }
     },
     {
-        title: "Explainable AI (XAI)",
-        description: "AI systems designed to be interpretable and understandable by humans.",
-        benefits: "Increases trust in AI decisions and helps in debugging and improving AI models.",
+        title: "API - Application Programming Interface",
+        description: "In AI context, interfaces for tool use or function calling in AI models.",
+        benefits: "Enables AI models to interact with external tools and services, expanding their capabilities.",
         points: 100,
         quiz: {
-            question: "Why is Explainable AI important?",
-            options: ["It makes AI faster", "It reduces model complexity", "It helps humans understand AI decisions", "It eliminates the need for training data"],
-            answer: 2
-        }
-    },
-    {
-        title: "Edge AI",
-        description: "AI algorithms processed locally on a hardware device, without requiring an internet connection.",
-        benefits: "Reduces latency, enhances privacy, and enables AI in environments with limited connectivity.",
-        points: 100,
-        quiz: {
-            question: "What is a key advantage of Edge AI?",
-            options: ["Increased computational power", "Reduced latency in processing", "Larger model sizes", "Centralized data processing"],
+            question: "How do APIs enhance AI model functionality?",
+            options: ["By increasing processing speed", "By enabling interaction with external tools", "By improving data storage", "By changing the model architecture"],
             answer: 1
         }
     },
     {
-        title: "Quantum Machine Learning",
-        description: "The integration of quantum computing and machine learning to enhance AI capabilities.",
-        benefits: "Potential for solving complex problems faster than classical computers in specific domains.",
+        title: "GPU - Graphics Processing Unit",
+        description: "Hardware component crucial for AI model training and operation.",
+        benefits: "Accelerates computational processes in AI, enabling faster training and inference.",
         points: 100,
         quiz: {
-            question: "What is the primary goal of Quantum Machine Learning?",
-            options: ["To replace classical computing entirely", "To enhance AI capabilities using quantum principles", "To reduce energy consumption in AI", "To simplify AI algorithms"],
+            question: "Why are GPUs important in AI?",
+            options: ["For displaying images", "For accelerating computations", "For storing large datasets", "For network connectivity"],
             answer: 1
         }
     },
     {
-        title: "Neuro-Symbolic AI",
-        description: "An approach that combines neural networks with symbolic AI methods.",
-        benefits: "Integrates the learning capabilities of neural networks with the reasoning power of symbolic systems.",
+        title: "T5 - Text-To-Text Transfer Transformer",
+        description: "A transformer model that treats every NLP task as a text-to-text problem.",
+        benefits: "Versatile model capable of handling various NLP tasks with a unified approach.",
         points: 100,
         quiz: {
-            question: "What does Neuro-Symbolic AI aim to achieve?",
-            options: ["Purely data-driven learning", "Combining neural networks and symbolic reasoning", "Eliminating the need for training data", "Focusing solely on natural language processing"],
+            question: "What is unique about the T5 model's approach to NLP tasks?",
+            options: ["It only works with numbers", "It treats all tasks as text-to-text", "It can't generate text", "It only works with images"],
             answer: 1
         }
     },
     {
-        title: "Swarm AI",
-        description: "AI systems inspired by the collective behavior of decentralized, self-organized systems in nature.",
-        benefits: "Enables efficient problem-solving through collaborative, distributed intelligence.",
+        title: "UL2 - Unifying Language Learning Paradigm",
+        description: "An approach to unify different pre-training objectives in language models.",
+        benefits: "Potentially improves model performance across various language tasks.",
         points: 100,
         quiz: {
-            question: "What natural phenomenon inspires Swarm AI?",
-            options: ["Individual animal behavior", "Weather patterns", "Collective behavior of insects or birds", "Plant growth"],
-            answer: 2
-        }
-    },
-    {
-        title: "AI Ethics",
-        description: "The branch of ethics that deals with the moral issues surrounding artificial intelligence.",
-        benefits: "Ensures responsible development and deployment of AI technologies.",
-        points: 100,
-        quiz: {
-            question: "Why is AI Ethics important?",
-            options: ["To increase AI processing speed", "To ensure responsible and fair AI development", "To reduce AI development costs", "To simplify AI algorithms"],
+            question: "What does UL2 aim to achieve in language model training?",
+            options: ["Reduce model size", "Unify pre-training objectives", "Increase training time", "Limit vocabulary size"],
             answer: 1
         }
     },
     {
-        title: "Ensemble Learning",
-        description: "A machine learning paradigm where multiple models are used to solve the same problem.",
-        benefits: "Often achieves better predictive performance than could be obtained from any of the constituent models alone.",
+        title: "ReAct - Reason + Act",
+        description: "An AI agent architecture that combines reasoning and acting capabilities.",
+        benefits: "Enables more sophisticated decision-making and task execution in AI systems.",
         points: 100,
         quiz: {
-            question: "What is the main advantage of Ensemble Learning?",
-            options: ["Reduced computational requirements", "Simplified model architecture", "Improved predictive performance", "Decreased training time"],
-            answer: 2
-        }
-    },
-    {
-        title: "Autoregressive Models",
-        description: "AI models that predict future values based on past values.",
-        benefits: "Effective for tasks involving sequential data, such as time series forecasting and text generation.",
-        points: 100,
-        quiz: {
-            question: "What type of data are Autoregressive Models particularly suited for?",
-            options: ["Image data", "Sequential data", "Unstructured data", "Categorical data"],
+            question: "What does the ReAct framework combine?",
+            options: ["Reading and writing", "Reasoning and acting", "Running and analyzing", "Recording and activating"],
             answer: 1
         }
     },
     {
-        title: "Zero-Shot Learning",
-        description: "The ability of a model to make predictions for classes it has not seen during training.",
-        benefits: "Enables AI systems to generalize to new, unseen categories without additional training.",
+        title: "RAISE - ReAct with Memory Enhancements",
+        description: "An extension of the ReAct framework with improved memory capabilities.",
+        benefits: "Enhances AI agents' ability to retain and utilize information over time.",
         points: 100,
         quiz: {
-            question: "What is the key feature of Zero-Shot Learning?",
-            options: ["It requires extensive training data", "It can classify unseen categories", "It only works with small datasets", "It focuses on image recognition tasks"],
+            question: "How does RAISE improve upon the ReAct framework?",
+            options: ["By removing reasoning", "By adding memory enhancements", "By simplifying actions", "By eliminating decision-making"],
             answer: 1
         }
     },
     {
-        title: "Active Learning",
-        description: "A machine learning approach where the algorithm can interactively query the user to label new data points.",
-        benefits: "Reduces the amount of labeled data required for training while maintaining model performance.",
+        title: "STaR - Self-Taught Reasoners",
+        description: "AI systems capable of improving their reasoning abilities through self-learning.",
+        benefits: "Enables AI to enhance its problem-solving skills autonomously.",
         points: 100,
         quiz: {
-            question: "How does Active Learning improve the learning process?",
-            options: ["By using more computational power", "By querying users for additional data labels", "By increasing model complexity", "By eliminating the need for human input"],
-            answer: 1
-        }
-    },
-    {
-        title: "Adversarial Machine Learning",
-        description: "A technique used to make machine learning models more robust by exposing them to adversarial examples.",
-        benefits: "Improves the security and reliability of AI systems against potential attacks or manipulations.",
-        points: 100,
-        quiz: {
-            question: "What is the primary goal of Adversarial Machine Learning?",
-            options: ["To speed up model training", "To reduce model size", "To make models more robust against attacks", "To simplify model architecture"],
-            answer: 2
-        }
-    },
-    {
-        title: "Capsule Networks",
-        description: "A type of neural network that adds structures called capsules to a convolutional neural network.",
-        benefits: "Potentially better at understanding spatial hierarchies between features in images.",
-        points: 100,
-        quiz: {
-            question: "What advantage do Capsule Networks offer over traditional CNNs?",
-            options: ["Faster processing", "Better understanding of spatial hierarchies", "Reduced memory usage", "Simplified training process"],
-            answer: 1
-        }
-    },
-    {
-        title: "Meta-Learning",
-        description: "The process of learning how to learn, enabling AI systems to adapt quickly to new tasks.",
-        benefits: "Enhances the flexibility and adaptability of AI models across various domains and tasks.",
-        points: 100,
-        quiz: {
-            question: "What is the main objective of Meta-Learning?",
-            options: ["To increase model size", "To learn how to learn efficiently", "To eliminate the need for training data", "To focus on a single specific task"],
+            question: "What is a key characteristic of STaR systems?",
+            options: ["They can't learn", "They improve reasoning through self-learning", "They only work with predefined rules", "They require constant human supervision"],
             answer: 1
         }
     },
     {
         title: "Transformer Architecture",
-        description: "A neural network architecture based on self-attention mechanisms.",
-        benefits: "Highly effective for processing sequential data, especially in NLP tasks.",
+        description: "Neural network architecture that uses self-attention mechanisms.",
+        benefits: "Enables efficient processing of sequential data, particularly in NLP tasks.",
         points: 100,
         quiz: {
             question: "What is a key component of the Transformer architecture?",
-            options: ["Convolutional layers", "Recurrent neural networks", "Self-attention mechanisms", "Decision trees"],
-            answer: 2
+            options: ["Convolutional layers", "Self-attention mechanism", "Recurrent cells", "Pooling layers"],
+            answer: 1
         }
     },
     {
         title: "Few-Shot Learning",
-        description: "The ability of a model to perform well on new tasks with very little training data.",
-        benefits: "Reduces the need for large datasets and enables quicker adaptation to new domains.",
+        description: "AI's ability to learn from a small number of examples or experiences.",
+        benefits: "Reduces the need for large datasets and enables quicker adaptation to new tasks.",
         points: 100,
         quiz: {
-            question: "What is the main advantage of few-shot learning?",
-            options: ["It requires more training data", "It works well with limited training examples", "It increases model complexity", "It only works for image recognition"],
+            question: "What is the main advantage of few-shot learning in AI?",
+            options: ["Requires more data", "Learns from minimal examples", "Increases model size", "Slows down training"],
+            answer: 1
+        }
+    },
+    {
+        title: "Reinforcement Learning",
+        description: "AI technique where agents learn to make decisions by interacting with an environment.",
+        benefits: "Enables AI to learn optimal strategies for complex, sequential decision-making tasks.",
+        points: 100,
+        quiz: {
+            question: "What is a key concept in Reinforcement Learning?",
+            options: ["Supervised training", "Reward maximization", "Data labeling", "Static environments"],
+            answer: 1
+        }
+    },
+    {
+        title: "Federated Learning",
+        description: "Technique for training AI models on decentralized data sources without sharing raw data.",
+        benefits: "Enhances privacy and enables collaboration while keeping sensitive data local.",
+        points: 100,
+        quiz: {
+            question: "What is a primary benefit of Federated Learning?",
+            options: ["Centralized data storage", "Enhanced data privacy", "Increased data transfer", "Reduced model accuracy"],
+            answer: 1
+        }
+    },
+    {
+        title: "Explainable AI (XAI)",
+        description: "AI systems designed to provide understandable explanations for their decisions.",
+        benefits: "Increases transparency and trust in AI decision-making processes.",
+        points: 100,
+        quiz: {
+            question: "Why is Explainable AI important?",
+            options: ["To make AI faster", "To increase model complexity", "To provide transparency in AI decisions", "To reduce computational costs"],
+            answer: 2
+        }
+    },
+    {
+        title: "Transfer Learning",
+        description: "Technique where knowledge gained from one task is applied to a different but related task.",
+        benefits: "Reduces training time and data requirements for new tasks.",
+        points: 100,
+        quiz: {
+            question: "What is a key advantage of Transfer Learning?",
+            options: ["Requires more data", "Applies knowledge from one task to another", "Increases model size", "Slows down training"],
+            answer: 1
+        }
+    },
+    {
+        title: "Generative Adversarial Networks (GANs)",
+        description: "AI model architecture consisting of two networks competing to generate realistic data.",
+        benefits: "Enables creation of highly realistic synthetic data, useful in various applications.",
+        points: 100,
+        quiz: {
+            question: "What is the primary purpose of GANs?",
+            options: ["Data classification", "Generating realistic synthetic data", "Text summarization", "Speech recognition"],
+            answer: 1
+        }
+    },
+    {
+        title: "Quantum Machine Learning",
+        description: "Integration of quantum computing principles with machine learning algorithms.",
+        benefits: "Potential for solving certain complex problems faster than classical computers.",
+        points: 100,
+        quiz: {
+            question: "What is a potential advantage of Quantum Machine Learning?",
+            options: ["Simpler algorithms", "Faster solving of certain complex problems", "Reduced energy consumption", "Easier model training"],
+            answer: 1
+        }
+    },
+    {
+        title: "Edge AI",
+        description: "AI processing performed on local devices rather than in the cloud.",
+        benefits: "Reduces latency, enhances privacy, and enables operation without constant internet connectivity.",
+        points: 100,
+        quiz: {
+            question: "What is a key benefit of Edge AI?",
+            options: ["Increased cloud dependency", "Reduced latency", "Higher power consumption", "Centralized processing"],
+            answer: 1
+        }
+    },
+    {
+        title: "Neuro-Symbolic AI",
+        description: "Approach combining neural networks with symbolic AI for improved reasoning.",
+        benefits: "Enhances AI's ability to perform complex reasoning tasks while maintaining learning capabilities.",
+        points: 100,
+        quiz: {
+            question: "What does Neuro-Symbolic AI aim to achieve?",
+            options: ["Purely statistical learning", "Combining neural networks and symbolic reasoning", "Eliminating neural networks", "Focusing solely on rule-based systems"],
+            answer: 1
+        }
+    },
+    {
+        title: "Anomaly Detection",
+        description: "AI technique for identifying unusual patterns that do not conform to expected behavior.",
+        benefits: "Useful in fraud detection, system health monitoring, and intrusion detection.",
+        points: 100,
+        quiz: {
+            question: "What is the primary use of Anomaly Detection in AI?",
+            options: ["Data generation", "Identifying unusual patterns", "Language translation", "Image recognition"],
+            answer: 1
+        }
+    },
+    {
+        title: "Sentiment Analysis",
+        description: "NLP technique for determining the emotional tone behind words.",
+        benefits: "Enables businesses to understand customer opinions and feedback at scale.",
+        points: 100,
+        quiz: {
+            question: "What does Sentiment Analysis primarily focus on?",
+            options: ["Generating text", "Determining emotional tone in text", "Translating languages", "Compressing data"],
+            answer: 1
+        }
+    },
+    {
+        title: "Computer Vision",
+        description: "AI field that trains computers to interpret and understand the visual world.",
+        benefits: "Enables machines to perform tasks like facial recognition, object detection, and image classification.",
+        points: 100,
+        quiz: {
+            question: "What is a common application of Computer Vision?",
+            options: ["Text generation", "Object detection in images", "Audio processing", "Database management"],
+            answer: 1
+        }
+    },
+    {
+        title: "Automated Machine Learning (AutoML)",
+        description: "Process of automating the tasks of applying machine learning to real-world problems.",
+        benefits: "Reduces the need for expert intervention in model selection and hyperparameter tuning.",
+        points: 100,
+        quiz: {
+            question: "What is the main purpose of AutoML?",
+            options: ["Manual data entry", "Automating ML model creation and tuning", "Handcrafting features", "Increasing model complexity"],
+            answer: 1
+        }
+    },
+    {
+        title: "Ethical AI",
+        description: "Development and use of AI systems that adhere to ethical principles and societal values.",
+        benefits: "Ensures AI technologies are developed and deployed responsibly and fairly.",
+        points: 100,
+        quiz: {
+            question: "Why is Ethical AI important?",
+            options: ["To make AI more powerful", "To ensure responsible and fair AI development", "To increase processing speed", "To reduce AI capabilities"],
             answer: 1
         }
     }
 ];
 
 function createNewCard(cardData) {
+    cardContainer.innerHTML = ''; // Clear existing card
     const card = document.createElement('div');
     card.className = 'card';
     card.innerHTML = `
@@ -603,7 +372,7 @@ function showQuiz(quizData, cardPoints) {
     quizData.options.forEach((option, index) => {
         const button = document.createElement('button');
         button.textContent = option;
-        button.onclick = () => checkAnswer(index, quizData.answer, cardPoints, quizData.question);
+        button.onclick = () => checkAnswer(index, quizData.answer, cardPoints, quizData.question, button);
         quizOptions.appendChild(button);
     });
     quizContainer.style.display = 'block';
@@ -611,58 +380,51 @@ function showQuiz(quizData, cardPoints) {
     quizResult.textContent = '';
 }
 
-function checkAnswer(selectedIndex, correctIndex, cardPoints, question) {
+function checkAnswer(selectedIndex, correctIndex, cardPoints, question, selectedButton) {
     const isCorrect = selectedIndex === correctIndex;
     quizResult.textContent = isCorrect ? "Correct! Well done!" : "Sorry, that's incorrect.";
 
-    const buttons = quizOptions.getElementsByTagName('button');
-    buttons[selectedIndex].style.backgroundColor = isCorrect ? '#4CAF50' : '#F44336';
-    buttons[selectedIndex].style.color = 'white';
-
-    if (isCorrect && !answeredQuizzes.has(question)) {
-        score += cardPoints;
-        scoreElement.textContent = score;
-        answeredQuizzes.add(question);
+    if (isCorrect) {
+        selectedButton.classList.add('correct');
+        if (!answeredQuizzes.has(question)) {
+            score += cardPoints;
+            scoreElement.textContent = score;
+            answeredQuizzes.add(question);
+        }
+    } else {
+        selectedButton.classList.add('incorrect');
+        quizOptions.children[correctIndex].classList.add('correct');
     }
 
-    if (!isCorrect) {
-        buttons[correctIndex].style.backgroundColor = '#4CAF50';
-        buttons[correctIndex].style.color = 'white';
-    }
-
-    Array.from(buttons).forEach(button => button.disabled = true);
+    Array.from(quizOptions.children).forEach(button => button.disabled = true);
 
     setTimeout(() => {
         quizContainer.style.display = 'none';
         quizOverlay.style.display = 'none';
-        Array.from(buttons).forEach(button => {
-            button.style.backgroundColor = '';
-            button.style.color = '';
+        Array.from(quizOptions.children).forEach(button => {
+            button.classList.remove('correct', 'incorrect');
             button.disabled = false;
         });
     }, 2000);
 }
 
+let currentCardIndex = 0;
+
 drawCardButton.addEventListener('click', function() {
-    const remainingCards = aiConcepts.length - cardContainer.children.length;
-    if (remainingCards <= 0) {
+    if (currentCardIndex >= aiConcepts.length) {
         alert("You've seen all the cards! Game over. Your final score is " + score);
         return;
     }
 
-    const newCardData = aiConcepts[cardContainer.children.length];
-    createNewCard(newCardData);
-
-    cardContainer.lastElementChild.scrollIntoView({ behavior: "smooth", block: "center" });
+    createNewCard(aiConcepts[currentCardIndex]);
+    currentCardIndex++;
 });
 
 function shareScore() {
-    const shareText = `I scored ${score} points in Samur{AI}: Retro Wisdom! Can you beat my score?`;
+    const shareText = `I scored ${score} points in Samur{ai} Wisdom! Can you beat my score?`;
     const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
     window.open(shareUrl, '_blank');
 }
-
-shareIcon.addEventListener('click', shareScore);
 
 helpIcon.addEventListener('click', function() {
     helpModal.style.display = 'block';
@@ -679,15 +441,8 @@ closeQuizButton.addEventListener('click', function() {
     quizOverlay.style.display = 'none';
 });
 
-// Responsive layout adjustments
-function adjustLayout() {
-    const isMobile = window.innerWidth <= 768;
-    cardContainer.style.flexDirection = isMobile ? 'column' : 'row';
-}
+shareIcon.addEventListener('click', shareScore);
 
-window.addEventListener('resize', adjustLayout);
-adjustLayout(); // Call on initial load
-
-// Initialize the game with one card
-createNewCard(aiConcepts[0]);
-</script></body></html>
+// Initialize the game with the first card
+createNewCard(aiConcepts[currentCardIndex]);
+currentCardIndex++;</script></body></html>
