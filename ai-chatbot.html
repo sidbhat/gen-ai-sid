@@ -1,0 +1,289 @@
+<html><head><base href="https://ai-discovery-hub.com/ai-chatbot">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Discovery Hub Chatbot</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f0f0f0;
+    }
+    .chat-container {
+        max-width: 800px;
+        margin: 20px auto;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    .chat-header {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px;
+        text-align: center;
+    }
+    .chat-messages {
+        height: 400px;
+        overflow-y: auto;
+        padding: 10px;
+    }
+    .message {
+        margin-bottom: 10px;
+        display: flex;
+        align-items: flex-start;
+    }
+    .message-content {
+        background-color: #e0e0e0;
+        border-radius: 10px;
+        padding: 8px 12px;
+        max-width: 70%;
+    }
+    .user-message .message-content {
+        background-color: #4CAF50;
+        color: white;
+        margin-left: auto;
+    }
+    .avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+    .user-message .avatar {
+        order: 1;
+        margin-right: 0;
+        margin-left: 10px;
+    }
+    .input-area {
+        display: flex;
+        padding: 10px;
+        background-color: #f0f0f0;
+    }
+    #user-input {
+        flex-grow: 1;
+        padding: 10px;
+        border: none;
+        border-radius: 20px;
+        margin-right: 10px;
+    }
+    #send-button, #upload-button, #emoji-button {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 20px;
+        cursor: pointer;
+    }
+    .emoji-picker {
+        display: none;
+        position: absolute;
+        bottom: 60px;
+        right: 10px;
+        background-color: white;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 5px;
+    }
+    .emoji-picker span {
+        cursor: pointer;
+        margin: 2px;
+    }
+    .username {
+        font-weight: bold;
+        margin-bottom: 3px;
+    }
+</style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>AI Discovery Hub Chatbot</h2>
+        </div>
+        <div class="chat-messages" id="chat-messages"></div>
+        <div class="input-area">
+            <input type="text" id="user-input" placeholder="Type your message...">
+            <button id="send-button">Send</button>
+            <button id="upload-button">📎</button>
+            <button id="emoji-button">😊</button>
+        </div>
+        <div class="emoji-picker" id="emoji-picker">
+            <span>😊</span><span>😂</span><span>🤔</span><span>👍</span><span>❤️</span>
+            <span>🎉</span><span>🚀</span><span>💡</span><span>🤖</span><span>🌈</span>
+        </div>
+    </div>
+
+<script>
+const chatMessages = document.getElementById('chat-messages');
+const userInput = document.getElementById('user-input');
+const sendButton = document.getElementById('send-button');
+const uploadButton = document.getElementById('upload-button');
+const emojiButton = document.getElementById('emoji-button');
+const emojiPicker = document.getElementById('emoji-picker');
+
+// Expanded user data
+const otherUsers = [
+    { id: 'user2', name: 'Alice', avatar: 'https://ai-discovery-hub.com/alice-avatar.png' },
+    { id: 'user3', name: 'Bob', avatar: 'https://ai-discovery-hub.com/bob-avatar.png' },
+    { id: 'user4', name: 'Charlie', avatar: 'https://ai-discovery-hub.com/charlie-avatar.png' },
+    { id: 'user5', name: 'Diana', avatar: 'https://ai-discovery-hub.com/diana-avatar.png' },
+    { id: 'user6', name: 'Ethan', avatar: 'https://ai-discovery-hub.com/ethan-avatar.png' },
+    { id: 'user7', name: 'Fiona', avatar: 'https://ai-discovery-hub.com/fiona-avatar.png' },
+    { id: 'user8', name: 'George', avatar: 'https://ai-discovery-hub.com/george-avatar.png' },
+    { id: 'user9', name: 'Hannah', avatar: 'https://ai-discovery-hub.com/hannah-avatar.png' },
+    { id: 'user10', name: 'Ian', avatar: 'https://ai-discovery-hub.com/ian-avatar.png' }
+];
+
+// Expanded list of sample messages
+const sampleMessages = [
+    "Hi everyone! What's the latest AI trend you're excited about? 🚀",
+    "Just tried the AI Image Generator, it's amazing! 🎨",
+    "Any tips for acing the AI Quiz? 🧠",
+    "The SAP Business AI solutions are game-changing for my company! 💼",
+    "Love how the Fortune Teller predicts my coffee addiction will continue! ☕️😄",
+    "Has anyone explored the HR AI scenarios? I'm curious about the recruitment features. 👥",
+    "The predictive analytics in SAP's finance solutions are impressive! 📊",
+    "I'm blown away by the supply chain optimization capabilities in BTP. 🏭",
+    "How does SAP's AI compare to other enterprise AI solutions? 🤔",
+    "The personalized marketing campaigns feature sounds intriguing. Any success stories? 📈",
+    "I'm new here. What's the best way to start exploring SAP's AI offerings? 🆕",
+    "The chatbot's responses are quite helpful. Great job, team! 👏",
+    "Does anyone know if there are webinars about SAP's AI solutions? 🎥",
+    "I'm impressed by how AI is transforming business processes across industries. 🌐",
+    "The AI Discovery Hub is such a fun way to learn about enterprise AI! 🎉",
+    "How is everyone implementing AI in their daily work? 💼",
+    "Just finished the S/4HANA AI module. Mind-blowing stuff! 🤯",
+    "Any recommendations for AI-focused podcasts or blogs? 🎧📚",
+    "The AI-driven customer service solutions are really improving our satisfaction rates! 😃",
+    "How do you all handle the ethical considerations of AI implementation? 🤔",
+    "The AI Image Generator gave me some great ideas for our next marketing campaign! 🖼️",
+    "Has anyone used SAP's AI for sustainability initiatives? 🌱",
+    "I'm loving how intuitive the AI Discovery Hub interface is! 👨‍💻",
+    "What's your favorite AI feature in SAP's offerings so far? 🌟",
+    "The AI Quiz really helped me understand the basics. Highly recommend! 📝"
+];
+
+function appendMessage(user, text) {
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('message');
+    if (user.id === 'user1') {
+        messageDiv.classList.add('user-message');
+    }
+    
+    messageDiv.innerHTML = `
+        <img src="${user.avatar}" alt="${user.name}" class="avatar">
+        <div>
+            <div class="username">${user.name}</div>
+            <div class="message-content">${text}</div>
+        </div>
+    `;
+    
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function getRandomUser() {
+    return otherUsers[Math.floor(Math.random() * otherUsers.length)];
+}
+
+function getRandomMessage() {
+    return sampleMessages[Math.floor(Math.random() * sampleMessages.length)];
+}
+
+function simulateUserActivity() {
+    const randomUser = getRandomUser();
+    const randomMessage = getRandomMessage();
+    appendMessage(randomUser, randomMessage);
+
+    if (randomMessage.includes("?")) {
+        setTimeout(() => {
+            const botUser = { id: 'bot', name: 'AI Assistant', avatar: 'https://ai-discovery-hub.com/bot-avatar.png' };
+            let botReply = "Great question! ";
+
+            if (randomMessage.includes("latest AI trend")) {
+                botReply += "One exciting trend is the integration of AI with IoT devices for smarter decision-making in various industries. SAP is at the forefront of this with our intelligent technologies! 🌟🤖";
+            } else if (randomMessage.includes("tips for acing the AI Quiz")) {
+                botReply += "To ace the AI Quiz, make sure you're familiar with basic AI concepts and SAP's AI offerings. Don't forget to check out our learning resources in the app! 📚✅";
+            } else if (randomMessage.includes("HR AI scenarios")) {
+                botReply += "The HR AI scenarios in our app showcase how AI can streamline recruitment processes, enhance employee engagement, and provide valuable workforce insights. Give it a try in the app! 👥🚀";
+            } else if (randomMessage.includes("SAP's AI compare")) {
+                botReply += "SAP's AI solutions stand out due to their seamless integration with existing SAP systems, industry-specific optimizations, and focus on real business outcomes. But don't take my word for it - explore the scenarios in our app to see for yourself! 💼🏆";
+            } else if (randomMessage.includes("best way to start exploring")) {
+                botReply += "Start by exploring the different scenarios in our app, take the AI Quiz to test your knowledge, and don't hesitate to ask questions here. The AI Discovery Hub is designed to be your friendly guide to SAP's AI world! 🗺️🤗";
+            } else if (randomMessage.includes("implementing AI in their daily work")) {
+                botReply += "Many users are leveraging AI for tasks like data analysis, process automation, and predictive maintenance. Check out our use case library in the app for more inspiration! 💡🔧";
+            } else if (randomMessage.includes("ethical considerations of AI")) {
+                botReply += "Ethical AI is a crucial topic. SAP follows strict guidelines for responsible AI development. We have resources on this in our app, and I recommend checking out SAP's AI Ethics Advisory Panel for more info. 🌐🤝";
+            } else if (randomMessage.includes("AI for sustainability initiatives")) {
+                botReply += "Yes! SAP's AI solutions are being used to optimize resource usage, reduce waste, and improve energy efficiency. There's a great case study on this in our Sustainability section. 🌱🌍";
+            } else if (randomMessage.includes("favorite AI feature")) {
+                botReply += "That's a tough one! Many users love our predictive analytics and natural language processing features. Why not explore different features in our app and share your favorite? 🌟🔍";
+            } else {
+                botReply += "I'd encourage you to explore that topic further using the resources in our app. There's so much to discover about SAP's AI offerings! 🌈🔍";
+            }
+
+            appendMessage(botUser, botReply);
+        }, 1000);
+    }
+}
+
+setInterval(simulateUserActivity, 10000); // Every 10 seconds
+
+// Initial messages to populate the chat
+for (let i = 0; i < 5; i++) {
+    setTimeout(simulateUserActivity, i * 2000);
+}
+
+sendButton.addEventListener('click', () => {
+    const message = userInput.value.trim();
+    if (message) {
+        appendMessage({ id: 'user1', name: 'You', avatar: 'https://ai-discovery-hub.com/user-avatar.png' }, message);
+        userInput.value = '';
+        
+        // Simple bot response
+        setTimeout(() => {
+            const botUser = { id: 'bot', name: 'AI Assistant', avatar: 'https://ai-discovery-hub.com/bot-avatar.png' };
+            let botReply = "Thanks for your message! ";
+
+            if (message.toLowerCase().includes("hello") || message.toLowerCase().includes("hi")) {
+                botReply += "Welcome to the AI Discovery Hub! How can I assist you today? 😊";
+            } else if (message.toLowerCase().includes("sap") && message.toLowerCase().includes("ai")) {
+                botReply += "SAP offers a wide range of AI solutions. Would you like to know more about a specific area, such as finance, HR, or supply chain? 🤖💼";
+            } else if (message.toLowerCase().includes("quiz")) {
+                botReply += "Our AI Quiz is a great way to test your knowledge! You can find it in the Games section of the main app. Good luck! 🧠🏆";
+            } else if (message.toLowerCase().includes("image generator")) {
+                botReply += "The AI Image Generator is one of our most popular features! Have you tried creating any images yet? 🎨🖼️";
+            } else if (message.toLowerCase().includes("fortune teller")) {
+                botReply += "Ah, the Fortune Teller! It's a fun way to see what AI predicts for your future. Remember, it's all in good fun! 🔮😄";
+            } else {
+                botReply += "That's an interesting topic! You might find more information about it in our main app. Feel free to explore and let me know if you have any specific questions! 🌟🔍";
+            }
+
+            appendMessage(botUser, botReply);
+        }, 1000);
+    }
+});
+
+userInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        sendButton.click();
+    }
+});
+
+uploadButton.addEventListener('click', () => {
+    alert('File upload feature coming soon!');
+});
+
+emojiButton.addEventListener('click', () => {
+    emojiPicker.style.display = emojiPicker.style.display === 'none' ? 'block' : 'none';
+});
+
+emojiPicker.addEventListener('click', (e) => {
+    if (e.target.tagName === 'SPAN') {
+        userInput.value += e.target.textContent;
+        emojiPicker.style.display = 'none';
+    }
+});
+
+</script>
+</body></html>
